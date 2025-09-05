@@ -12,6 +12,10 @@ I will add notes here as I learn useful info.
 - [Canvas](https://byu.instructure.com)
 - [MDN](https://developer.mozilla.org)
 
+## GitHub
+
+I've already used GitHub extensively for my job, so I have a decent understanding of how to use it already. But from this assignment I learned a lot more about how Git works as opposed to GitHub and some of their differences. I also learned how to pull and push to and from GitHub using the command line as opposed to the VS Code integration.
+
 ## AWS
 
 My IP address is: 54.81.96.130
