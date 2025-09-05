@@ -1,6 +1,10 @@
 # CS 260 Notes
 
-[My startup - Simon](https://simon.cs260.click)
+[My startup - Brenden](https://simon.cs260.click)
+
+##
+
+I will add notes here as I learn useful info.
 
 ## Helpful links
 
