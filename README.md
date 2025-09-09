@@ -17,7 +17,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 ### Elevator pitch
 
-Have you ever wanted to track your workouts and fitness goals but also those of your friends? FlexBook allows you to track your progress and track the progess of others. Each user can implement custom workouts and record their results, and then view the results of others. Once someone has reached an important milestone or recorded a personal best, they can choose to notify their friends who can in turn show their support through reacting to the notification.
+Have you ever wanted to track your workouts and fitness goals but also those of your friends? FlexBook allows you to track your progress and track the progess of others. Each user can implement custom workouts and record their results, and then view the results of others. Once someone has reached an important milestone or recorded a personal best, they can choose to notify their friends through putting their results on their friend's feed.
 
 ### Design
 
@@ -49,11 +49,17 @@ sequenceDiagram
 
 I am going to use the required technologies in the following ways.
 
-- **HTML** - Description here
-- **CSS** - Description here
-- **React** - Description here
-- **Service** - Description here
-- **DB/Login** - Description here
+- **HTML** - Uses correct HTML structure for application. HTML pages for login, your workouts, your friends feed, and personal progress.
+- **CSS** - Application styling that looks good on different screen sizes, uses good whitespace, color choice and contrast.
+- **React** - Provides login, progresses through each workout, updates progress chart, updates friends feed.
+- **Service** - Backend service with endpoints for:
+  - login
+  - updating friends list
+  - updating workout logs
+  - updating and reacting to friends feed
+  - https://github.com/cheatsnake/emojihub for emojis to react with 
+  - https://wger.de/en/software/api for access to robust list of workouts
+- **DB/Login** - Register, and login users. Store workouts, progress, and reactions. Credentials stored securely in database.
 - **WebSocket** - Description here
 
 ## 🚀 AWS deliverable
