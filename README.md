@@ -21,9 +21,12 @@ Have you ever wanted to track your workouts and fitness goals but also those of 
 
 ### Design
 
-![Design image](placeholder.png)
+![Login sketch](images/Login.png)
+![Workouts sketch](images/Workouts.png)
+![Progress sketch](images/Progress.png)
+![Reactions sketch](images/Reactions.png)
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Note: All of these sketches are done on a mobile phone as that is what I imagine the primary device type used would be for this type of web app, but I will design a proper web interface for a computer as well.
 
 ```mermaid
 sequenceDiagram
