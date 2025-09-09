@@ -49,9 +49,9 @@ sequenceDiagram
 
 I am going to use the required technologies in the following ways.
 
-- **HTML** - Uses correct HTML structure for application. HTML pages for login, your workouts, your friends feed, and personal progress.
+- **HTML** - Uses correct HTML structure for application. HTML pages for login, your workouts, your reactions feed, and personal progress.
 - **CSS** - Application styling that looks good on different screen sizes, uses good whitespace, color choice and contrast.
-- **React** - Provides login, progresses through each workout, updates progress chart, updates friends feed.
+- **React** - Provides login, progresses through each workout, updates progress chart, updates reactions feed.
 - **Service** - Backend service with endpoints for:
   - login
   - updating friends list
