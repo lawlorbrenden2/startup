@@ -60,7 +60,7 @@ I am going to use the required technologies in the following ways.
   - https://github.com/cheatsnake/emojihub for emojis to react with 
   - https://wger.de/en/software/api for access to robust list of workouts
 - **DB/Login** - Register, and login users. Store workouts, progress, and reactions. Credentials stored securely in database.
-- **WebSocket** - Description here
+- **WebSocket** - When a user reacts to another user's new personal best, send a notification to the original user.
 
 ## 🚀 AWS deliverable
 
