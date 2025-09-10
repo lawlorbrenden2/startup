@@ -21,8 +21,19 @@ Have you ever wanted to track your workouts and fitness goals but also those of 
 
 ### Design
 
+![Login sketch](images/Login.png)
+![Workouts sketch](images/Workouts.png)
+![Progress sketch](images/Progress.png)
+![Reactions sketch](images/Reactions.png)
+
 Note: All of these sketches are done on a mobile phone as that is what I imagine the primary device type used would be for this type of web app, but I will design a proper web interface for a computer as well.
 
+```mermaid
+sequenceDiagram
+    actor You
+    actor Website
+    You->>Website: Replace this with your design
+```
 
 ### Key features
 
