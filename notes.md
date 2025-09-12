@@ -32,7 +32,7 @@ I'm adding this tcp/ip chart for future reference:
 
 ## Caddy
 
-No problems worked just like it said in the [instruction](https://github.com/webprogramming260/.github/blob/main/profile/webServers/https/https.md).
+No problems worked just like it said in the [instruction](https://github.com/webprogramming260/.github/blob/main/profile/webServers/https/https.md). Additionally, I enjoyed learning about how to use caddy to automatically request web certificates from Let's Encrypt.
 
 ## HTML
 
