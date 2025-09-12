@@ -20,6 +20,15 @@ I've already used GitHub extensively for my job, so I have a decent understandin
 
 My IP address is: 100.25.184.113. I had some issues getting DNS set up for my website, but in the end I got it all figured out. I learned how to host my webserver using EC2 in AWS and how to purchase a domain name and link it to my webserver.
 
+I'm adding this tcp/ip chart for future reference:
+
+| Layer       | Example         | Purpose                               |
+| ----------- | --------------- | ------------------------------------- |
+| Application | HTTPS           | Functionality like web browsing       |
+| Transport   | TCP             | Moving connection information packets |
+| Internet    | IP              | Establishing connections              |
+| Link        | Fiber, hardware | Physical connections                  |
+
 
 ## Caddy
 
