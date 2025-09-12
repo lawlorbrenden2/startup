@@ -18,8 +18,8 @@ I've already used GitHub extensively for my job, so I have a decent understandin
 
 ## AWS
 
-My IP address is: 54.81.96.130
-Launching my AMI I initially put it on a private subnet. Even though it had a public IP address and the security group was right, I wasn't able to connect to it.
+My IP address is: 100.25.184.113. I had some issues getting DNS set up for my website, but in the end I got it all figured out. I learned how to host my webserver using EC2 in AWS and how to purchase a domain name and link it to my webserver.
+
 
 ## Caddy
 
