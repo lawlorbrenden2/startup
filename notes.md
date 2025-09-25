@@ -41,6 +41,7 @@ I've already used HTML extensively before, so this was more or less a review, ho
 - The <head> section always defines important metadata about the page.
 - `<sup>&reg;</sup>` can be used to render a trademark symbol right above your webpages title. As a side note, I'm not sure if it's chill to add this in this situation, but I imagine it's probably harmless.
 - I gained extra practice with adding different types of inputs, like buttons and text fields with text and password types.
+- It is very difficult to make your webpage look how you want it to without css!
 
 This was easy. I was careful to use the correct structural elements such as header, footer, main, nav, and form. The links between the three views work great using the `a` element.
 
