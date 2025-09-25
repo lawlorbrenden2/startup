@@ -73,12 +73,12 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 - [x] **HTML pages** - 4 HTML pages for signing in, workouts, progress, and reactions.
 - [x] **Proper HTML element usage** - BODY, NAV, MAIN, HEADER, FOOTER all used.
 - [x] **Links** - All pages link to all other pages and a sign out link at the bottom of each page which links back to index.html.
-- [x] **Text** - Text placeholders are placed in multiple places, including but not limited to your friends' reactions, workouts, and .
-- [x] **3rd party API placeholder** - I did not complete this part of the deliverable.
-- [x] **Images** - I did not complete this part of the deliverable.
-- [x] **Login placeholder** - I did not complete this part of the deliverable.
-- [x] **DB data placeholder** - I did not complete this part of the deliverable.
-- [x] **WebSocket placeholder** - I did not complete this part of the deliverable.
+- [x] **Text** - Placeholder text in workouts.html to show how an exercise is completed.
+- [x] **3rd party API placeholder** - Emoji's will be supplied from https://github.com/cheatsnake/emojihub for reactions and workouts will be supplied from https://wger.de/en/software/api along with useful data on exercises.
+- [x] **Images** - Bench press and graph placeholder images placed in progress.html.
+- [x] **Login placeholder** - Login placeholder in index.html.
+- [x] **DB data placeholder** - Log in boxes for user verification, user data (friends list, workouts, progress, reactions).
+- [x] **WebSocket placeholder** - Recent reactions from your friend's represents data sent instantly from your friends.
 
 ## 🚀 CSS deliverable
 
