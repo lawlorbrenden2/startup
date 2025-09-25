@@ -70,10 +70,10 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [x] **HTML pages** - I did not complete this part of the deliverable.
-- [x] **Proper HTML element usage** - I did not complete this part of the deliverable.
-- [x] **Links** - I did not complete this part of the deliverable.
-- [x] **Text** - I did not complete this part of the deliverable.
+- [x] **HTML pages** - 4 HTML pages for signing in, workouts, progress, and reactions.
+- [x] **Proper HTML element usage** - BODY, NAV, MAIN, HEADER, FOOTER all used.
+- [x] **Links** - All pages link to all other pages and a sign out link at the bottom of each page which links back to index.html.
+- [x] **Text** - Text placeholders are placed in multiple places, including but not limited to your friends' reactions, workouts, and .
 - [x] **3rd party API placeholder** - I did not complete this part of the deliverable.
 - [x] **Images** - I did not complete this part of the deliverable.
 - [x] **Login placeholder** - I did not complete this part of the deliverable.
