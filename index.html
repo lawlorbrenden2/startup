@@ -1,60 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <!-- Tell browsers not to scale the viewport automatically -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>FlexBook HTML</title>
-        <link rel="icon" href="favicon.ico" />
+<html lang="en" data-bs-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FlexBook HTML</title>
+    <link rel="icon" href="favicon.ico" />
 
-        <link rel="stylesheet" href="main.css" />
-        <!-- Include the bootstrap framework -->
-        <link 
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" 
-            rel="stylesheet" 
-            integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" 
-            crossorigin="anonymous"
-        />
-    </head>
-    <body>
-        <header>
-            <h1>FlexBook<sup>&reg;</sup></h1>
-            <nav> <!-- These links won't be there in the final edition, but to allow for easy navigation
-                for development and grading I have added them here -->
-                <menu>
-                    <li><a href="progress.html">Progress</a></li>
-                    <li><a href="workouts.html">Workouts</a></li>
-                    <li><a href="reactions.html">Reactions</a></li>
-                </menu>
-        </nav>
-        </header>
-        <main>
-            <hr/>
-            <h2>Login</h2>
-            <form method="get" action="progress.html">
-                <div>
-                    <p>User</p>
-                    <input type="text" placeholder="username">
-                </div>
-                <div>
-                    <p>Password</p>
-                    <input type="password" placeholder="password">
-                </div>
-                <button type="submit">Login</button>
-                <button type="submit">Create</button>
-            </form>
-        </main>
-        <hr/>
-        <footer>
-            <span class="text-reset">Developed by Brenden Lawlor</span>
-            <br/>
-            <a href="https://github.com/lawlorbrenden2/startup">GitHub</a>
-        </footer>
-        <script 
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" 
-            crossorigin="anonymous">
+    <link rel="stylesheet" href="main.css" />
+    <link 
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" 
+      rel="stylesheet" 
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" 
+      crossorigin="anonymous"
+    />
+  </head>
+  <body class="bg-dark text-light">
+    <header class="container-fluid">
+      <h1>FlexBook<sup>&reg;</sup></h1>
+      <nav> <menu>
+          <li><a href="progress.html">Progress</a></li>
+          <li><a href="workouts.html">Workouts</a></li>
+          <li><a href="reactions.html">Reactions</a></li>
+        </menu>
+                
+      </nav>
+    </header>
+    <main>
+      <hr/>
+      <h2>Login</h2>
+      <form method="get" action="progress.html">
+        <div>
+          <p>User</p>
+          <input type="text" placeholder="username">
+        </div>
+        <div>
+          <p>Password</p>
+          <input type="password" placeholder="password">
+        </div>
+        <button type="submit">Login</button>
+        <button type="submit">Create</button>
+      </form>
+    </main>
+    <hr/>
+    <footer>
+      <span class="text-reset">Developed by Brenden Lawlor</span>
+      <br/>
+      <a href="https://github.com/lawlorbrenden2/startup">GitHub</a>
+    </footer>
+    <script 
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" 
+      crossorigin="anonymous">
 
-        </script>
-    </body>
+    </script>
+  </body>
 
 </html>
