@@ -84,7 +84,6 @@ main p {
   justify-content: space-between;
 }
 
-
 footer {
   flex: 0 30px;
   flex-shrink: 0;  
@@ -115,8 +114,9 @@ footer {
   border-color: #5c0da0;
 }
 
-@media (max-width: 600px) {
-  .navbar .navbar-brand {
-    font-size: 16px;
+
+@media (max-height: 450px) {
+  .graph {
+    max-height: 25vh;
   }
 }
