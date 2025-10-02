@@ -15,23 +15,24 @@
   </head>
   <body class="bg-dark text-light">
     <header class="container-fluid">
-	<nav class="navbar fixed-top bg-primary navbar-dark">
-      <a class="navbar-brand" href="#">FlexBook</a><sup>&reg;</sup></a>
-		<menu class="navbar-nav">
-		  <li class="nav-item">
-			<a class="nav-link active" href="index.html">Home</a>
-		  </li>
-          <li class="nav-item">
-			<a class="nav-link" href="progress.html">Progress</a>
-		  </li>
-		  <li class="nav-item">
-			<a class="nav-link" href="Workouts.html">Workouts</a>
-		  </li>
-		  <li class="nav-item">
-			<a class="nav-link" href="Reactions">Reactions</a>
-		  </li>
-        </menu>      
-      </nav>
+		<nav class="navbar fixed-top bg-primary navbar-dark">
+			<div class="dropdown">
+				<button 
+					class="btn navbar-toggler" 
+					type="button" 
+					data-bs-toggle="dropdown" 
+					aria-expanded="false">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a class="dropdown-item" href="index.html">Home</a></li>
+					<li><a class="dropdown-item" href="progress.html">Progress</a></li>
+					<li><a class="dropdown-item" href="workouts.html">Workouts</a></li>
+					<li><a class="dropdown-item" href="reactions.html">Reactions</a></li>
+				</ul>
+			</div>
+			<a class="navbar-brand mx-auto" href="#">FlexBook</a><sup>&reg;</sup></a>     
+		</nav>
     </header>
     <main>
       <hr/>
