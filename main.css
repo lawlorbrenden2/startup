@@ -2,6 +2,7 @@ body {
   display: flex;
   flex-direction: column;
   min-width: 375px;
+  min-height: 100vh;
 }
 
 header {
@@ -10,21 +11,16 @@ header {
 }
 
 main {
-  flex: 1 1 auto;
+  flex: 1 calc(100vh - 110px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 100px;
+  justify-content: space-around;
 }
 
 
 footer {
-  height: 40px;
-  line-height: 40px;    
-  flex-shrink: 0;        
-  width: 100%;           
-  text-align: center;
-
+  flex: 0 30px;
 }
 
 
@@ -41,6 +37,11 @@ menu {
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
+}
+
+h1 {
+  font-size: 3rem;
+  padding: .3em;
 }
 
 
@@ -61,8 +62,14 @@ menu .nav-item {
   padding: 0 0.3em;
 }
 
-footer a {
-  float: right;
+footer {
+  flex-shrink: 0;  
+  height: 40px;         
+  line-height: 40px;    
+  width: 100%;
+  text-align: center;
+  background-color: #222;
+  color: #fff;
 }
 
 :root,
@@ -80,9 +87,10 @@ footer a {
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
-  background-color: var(--bs-primary);
-  border-color: var(--bs-primary);
+  background-color: #5c0da0;
+  border-color: #5c0da0;
 }
+
 
 
 
