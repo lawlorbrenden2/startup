@@ -20,18 +20,6 @@ main {
   gap: 8px;
 }
 
-
-footer {
-  flex: 0 30px;
-}
-
-menu {
-  flex: 1;
-  display: flex;
-  flex-direction: row !important;
-  list-style: none;
-}
-
 .navbar .navbar-brand {
   font-weight: bold;
   position: absolute;
@@ -96,11 +84,9 @@ main p {
   justify-content: space-between;
 }
 
-menu .nav-item {
-  padding: 0 5px;
-}
 
 footer {
+  flex: 0 30px;
   flex-shrink: 0;  
   height: 40px;         
   line-height: 40px;    
