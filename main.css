@@ -16,6 +16,8 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
+  padding-top: 60px;
+  padding-bottom: 40px;
 }
 
 
@@ -33,6 +35,7 @@ menu {
 }
 
 .navbar .navbar-brand {
+  font-weight: bold;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -53,6 +56,14 @@ h1 {
 .navbar .dropdown {
   position: relative;
   z-index: 1;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 800px;
 }
 
 

@@ -14,42 +14,57 @@
 	<link rel="stylesheet" href="main.css" />
   </head>
     <body class="bg-dark text-light">
-    <header class="container-fluid">
-		<nav class="navbar fixed-top bg-primary navbar-dark">
-			<div class="dropdown">
-				<button 
-					class="btn navbar-toggler" 
-					type="button" 
-					data-bs-toggle="dropdown" 
-					aria-expanded="false">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<ul class="dropdown-menu">
-					<li><a class="dropdown-item" href="index.html">Home</a></li>
-					<li><a class="dropdown-item" href="progress.html">Progress</a></li>
-					<li><a class="dropdown-item" href="workouts.html">Workouts</a></li>
-					<li><a class="dropdown-item" href="reactions.html">Reactions</a></li>
-				</ul>
-			</div>
-			<a class="navbar-brand mx-auto" href="#">FlexBook<sup>&reg;</sup></a>     
-		</nav>
-    </header>
-        <main>
-            <hr/>
-            <div class="dropdown">
-                <button>Friends</h2>
-                    <!-- Placeholder text here for friends you can interact with -->
-                </button>
+        <header class="container-fluid">
+            <nav class="navbar fixed-top bg-primary navbar-dark">
+                <div class="dropdown">
+                    <button 
+                        class="btn navbar-toggler" 
+                        type="button" 
+                        data-bs-toggle="dropdown" 
+                        aria-expanded="false">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="index.html">Home</a></li>
+                        <li><a class="dropdown-item" href="progress.html">Progress</a></li>
+                        <li><a class="dropdown-item" href="workouts.html">Workouts</a></li>
+                        <li><a class="dropdown-item" href="reactions.html">Reactions</a></li>
+                    </ul>
+                </div>
+                <a class="navbar-brand mx-auto" href="#">FlexBook<sup>&reg;</sup></a>     
+            </nav>
+        </header>
+        <main class="container-fluid bg-dark text-light d-flex flex-column align-items-center">
+        <div class="content-wrapper">
+            <h1>Progress</h1>
+            
+            <div class="dropdown my-3">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                Friends
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Friend 1</a></li>
+                <li><a class="dropdown-item" href="#">Friend 2</a></li>
+            </ul>
             </div>
-            <div class="dropdown">
-                <button>Exercises</h2>
-                    <!-- Placeholder text here for exercises you can view the progress of -->
-                </button>
-                <h2>Bench Press</h2> <!-- Placeholder for exercise that you're displaying-->
-                <img src="images/benchpress_placeholder.webp" width="400"> <!-- Place holder image for exercise being displayed -->
+
+            <div class="exercise my-3 text-center">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                Exercises
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Bench Press</a></li>
+                <li><a class="dropdown-item" href="#">Squat</a></li>
+            </ul>
+            <h2 class="mt-3">Bench Press</h2>
             </div>
-            <img src="images/graph_up.jpg" width="400">
+
+            <div class="graph my-3">
+            <img src="images/graph_up.jpg" class="img-fluid rounded">
+            </div>
+        </div>
         </main>
+
         <footer class="bg-dark text-white-50">
             <div class="container-fluid d-flex justify-content-between align-items-center">
                 <span class="text-reset">Developed by Brenden Lawlor</span>
