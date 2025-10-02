@@ -19,10 +19,12 @@ main {
 
 
 footer {
-  flex-shrink: 0;
-  padding: 0.5rem;
-  width: 100%;
+  height: 40px;
+  line-height: 40px;    
+  flex-shrink: 0;        
+  width: 100%;           
   text-align: center;
+
 }
 
 
@@ -66,8 +68,23 @@ footer a {
 :root,
 [data-bs-theme="dark"] {
   --bs-primary: #6d0fb0;
-  --bs-primary-rgb: 150, 26, 239;
+  --bs-primary-rgb: 109, 15, 176;
 }
+
+.btn-primary {
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+  color: #fff;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+
+
 
 
 @media (max-width: 600px) {
