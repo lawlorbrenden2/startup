@@ -18,14 +18,12 @@ main {
   justify-content: flex-start;
   padding-top: 80px;
   padding-bottom: 40px;
-  gap: 0.5rem;
+  gap: 8px;
 }
-
 
 footer {
   flex: 0 30px;
 }
-
 
 menu {
   flex: 1;
@@ -43,21 +41,32 @@ menu {
 }
 
 h1 {
-  font-size: 3rem;
-  padding: .3em;
+  font-size: 48px;
+  padding: 5px;
 }
 
-main h1 {
+main h1,
+main p {
   margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
+}
+
+main h2 {
+  font-size: clamp(32px, 4vw, 48px);
+  text-align: center;
+}
+
+main p {
+  font-size: clamp(16px, 3vw, 32px);
+  text-align: center;
 }
 
 .dropdown-row {
   display: flex;
   justify-content: center;
-  margin-top: 0.25rem;
-  margin-bottom: 1rem;
-  gap: 1rem;
+  margin-top: 4px;
+  margin-bottom: 16px;
+  gap: 16px;
 }
 
 .dropdown-row .btn {
@@ -75,10 +84,9 @@ main h1 {
 }
 
 .current-user {
-    color: #888; 
-    font-size: .8rem;  
+  color: #888; 
+  font-size: 13px;
 }
-
 
 .content-wrapper {
   display: flex;
@@ -89,11 +97,8 @@ main h1 {
   justify-content: space-between;
 }
 
-
-
-
 menu .nav-item {
-  padding: 0 0.3em;
+  padding: 0 5px;
 }
 
 footer {
@@ -125,13 +130,8 @@ footer {
   border-color: #5c0da0;
 }
 
-
-
-
-
 @media (max-width: 600px) {
   .navbar .navbar-brand {
-    font-size: 1rem;
+    font-size: 16px;
   }
-
 }
