@@ -74,6 +74,12 @@ main h1 {
   z-index: 1;
 }
 
+.current-user {
+    color: #888; 
+    font-size: .8rem;  
+}
+
+
 .content-wrapper {
   display: flex;
   flex-direction: column;
