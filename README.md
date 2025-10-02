@@ -86,10 +86,10 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 - [x] **Header, footer, and main content body** - I changed the header and footer to match across all webpages and updated the designs.
 - [x] **Navigation elements** - I made all navigation done through a drop down from the navbar.
-- [x] **Responsive to window resizing** - My app looks great 
-- [x] **Application elements** - I did not complete this part of the deliverable.
-- [x] **Application text content** - I did not complete this part of the deliverable.
-- [x] **Application images** - I did not complete this part of the deliverable.
+- [x] **Responsive to window resizing** - My app looks great on all sizes of screens and devices.
+- [x] **Application elements** - Added tables and cards to workouts.html and reactions.html and styled them to be consistent with the rest of my design.
+- [x] **Application text content** - Used the same font throughout for consistency.
+- [x] **Application images** - Added round cornering to image (also got rid of benchpress placeholder image as I thought it cluttered upt the design and was unnecessary).
 
 ## 🚀 React part 1: Routing deliverable
 
