@@ -47,6 +47,22 @@ h1 {
   padding: .3em;
 }
 
+main h1 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.dropdown-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.dropdown-row .btn {
+  width: 120px;
+}
 
 .navbar-toggler {
   border: none;      
