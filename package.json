@@ -8,17 +8,9 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lawlorbrenden2/startup.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/lawlorbrenden2/startup/issues"
-  },
-  "homepage": "https://github.com/lawlorbrenden2/startup#readme",
   "devDependencies": {
     "vite": "^7.1.9"
   }
