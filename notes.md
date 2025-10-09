@@ -81,6 +81,8 @@ Additionaly, I learned about tables and cards for my workouts page and reactions
 
 Setting up Vite and React was pretty simple. I had a bit of trouble because of conflicting CSS. This isn't as straight forward as you would find with Svelte or Vue, but I made it work in the end. If there was a ton of CSS it would be a real problem. It sure was nice to have the code structured in a more usable way.
 
+I decided to keep that placeholder paragraph as it basically summed up my experience exactly of porting my existing work to React. It was great having a proper and organized directory system now. I also enjoyed learning how this whole process of injecting react into the html and then having it converted back to Javascript works behind the scenes.
+
 ## React Part 2: Reactivity
 
 This was a lot of fun to see it all come together. I had to keep remembering to use React state instead of just manipulating the DOM directly.

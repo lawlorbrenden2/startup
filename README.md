@@ -95,9 +95,9 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Bundled using Vite** - I did not complete this part of the deliverable.
-- [ ] **Components** - I did not complete this part of the deliverable.
-- [ ] **Router** - I did not complete this part of the deliverable.
+- [x] **Bundled using Vite** - I installed Vite to my project directory and used it to install the required dependencies.
+- [x] **Components** - React components return the basic html for the login, progress, workouts, and reactions pages.
+- [x] **Router** - I added routing for all of the webpages.
 
 ## 🚀 React part 2: Reactivity deliverable
 
