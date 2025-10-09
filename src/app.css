@@ -114,6 +114,30 @@ footer {
   border-color: #5c0da0;
 }
 
+.dropdown-menu {
+  background-color: #1b1b1b;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: var(--bs-primary); 
+  color: #fff;
+}
+
+
+.dropdown-item.active,
+.dropdown-item.active:hover {
+  background-color: #5c0da0;
+  color: #fff;
+}
+
+.navbar.bg-primary {
+  background-color: #4a0b7e !important;
+}
+
 
 @media (max-height: 450px) {
   .graph {

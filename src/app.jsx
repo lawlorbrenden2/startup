@@ -1,12 +1,13 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './app.css';
 
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
-import { login } from './login/login';
-import { progress } from './progress/progress';
-import { ractions } from './reactions/reactions';
-import { workouts } from './workouts/workouts';
+import { Login } from './login/login';
+import { Progress } from './progress/progress';
+import { Reactions } from './reactions/reactions';
+import { Workouts } from './workouts/workouts';
 
 
 export default function App() {
@@ -24,15 +25,16 @@ export default function App() {
               >
                 <span className="navbar-toggler-icon"></span>
               </button>
-              <ul className="dropdown-menu">
-                <li><a className="dropdown-item" href="progress.html">Progress</a></li>
-                <li><a className="dropdown-item" href="workouts.html">Workouts</a></li>
-                <li><a className="dropdown-item" href="reactions.html">Reactions</a></li>
+              <ul className="dropdown-menu" data-bs-theme="dark">
+                <li><NavLink className="dropdown-item" to="/">Home</NavLink></li>
+                <li><NavLink className="dropdown-item" to="/progress">Progress</NavLink></li>
+                <li><NavLink className="dropdown-item" to="/workouts">Workouts</NavLink></li>
+                <li><NavLink className="dropdown-item" to="/reactions">Reactions</NavLink></li>
               </ul>
             </div>
-            <a className="navbar-brand mx-auto" href="#">
+            <div className="navbar-brand mx-auto">
               FlexBook<sup>&reg;</sup>
-            </a>
+            </div>
           </nav>
         </header>
 
