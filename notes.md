@@ -304,24 +304,363 @@ Random notes:
   - Padding adds space inside the div, margin adds space outside of it
 
 
-  Tags & ElementsWhat does the <link> element do?Links an external resource (usually a CSS file) to the HTML document.Example: <link rel="stylesheet" href="styles.css"> applies styles from styles.css.What does a <div> tag do?A <div> is a block-level container for grouping other elements.Used for structure and layout; has default display: block and takes full width.How do you declare the document type?<!DOCTYPE html>HTML Opening Tags (Quick Reference):Paragraph: <p>Ordered List: <ol>Unordered List: <ul>First Level Heading: <h1>Second Level Heading: <h2>Third Level Heading: <h3>Hyperlinks and ImagesHow to display an image with a hyperlink?Wrap the <img> element with an <a> tag.HTML<a href="https://example.com">
+I understand. I will format the provided content using Markdown for optimal presentation on a webpage, ensuring clarity and structure without changing any text.
+
+💡 Web Development & Coding Q&A
+📑 HTML Structure & Elements
+What does the link element do?
+
+It links an external resource (usually a CSS file) to the HTML document.
+
+Example: <link rel="stylesheet" href="styles.css"> applies styles from styles.css to the page.
+
+What does a div tag do?
+
+A div is a block-level container that groups other elements. It's used for structure and layout.
+
+Divs have default display: block and take full width. They don't add behavior by themselves.
+
+How do you declare the document type to be html?
+
+<!DOCTYPE html>
+
+What is the opening HTML tag for a paragraph, ordered list, unordered list, second level heading, first level heading, third level heading?
+
+Paragraph: <p>
+
+Ordered list: <ol>
+
+Unordered list: <ul>
+
+Second level heading: <h2>
+
+First level heading: <h1>
+
+Third level heading: <h3>
+
+🎨 CSS & Layout
+What is the difference between the #title and .grid selector?
+
+#title selects an element by ID (unique).
+
+.grid selects elements by class (can apply to multiple elements).
+
+What is the difference between padding and margin?
+
+Padding: space inside the element (between content and border).
+
+Margin: space outside the element (between border and other elements).
+
+In the CSS box model, what is the ordering of the box layers starting at the inside and working out?
+
+Order: Content → Padding → Border → Margin
+
+Padding increases size inside border; margin creates space between elements.
+
+Given this HTML and this CSS how will the images be displayed using flex?
+
+If the container uses display: flex;, the images will be displayed in a row by default, side by side, unless flex-direction: column; is specified.
+
+What does the following padding CSS do?
+
+Example: padding: 10px 20px; adds 10px top/bottom and 20px left/right inside the element.
+
+By default, the HTML span element has a default CSS display property value of:
+
+inline
+
+How would you use CSS to change all the div elements to have a background color of red?
+
+CSS
+
+  div { background-color: red; }
+Given the following HTML, what CSS would you use to set the text "trouble" to green and leave the "double" text unaffected?
+
+Given <p><span class="trouble">trouble</span> double</p>, use .trouble { color: green; }
+
+💻 JavaScript & DOM
+What does the following code using arrow syntax function declaration do?
+
+Arrow functions are a compact function syntax. (a, b) => a + b means a function with parameters a and b that returns a+b.
+
+Examples:
+
+JavaScript
+
+const add = (a, b) => a + b;
+const greet = name => `Hi ${name}`;
+const square = x => { return x * x; } // block form
+Note: arrow functions do not bind their own 'this' and are not suitable as constructors.
+
+What does the following code using map with an array output?
+
+map() transforms every element of an array and returns a new array without mutating the original.
+
+Examples:
+
+JavaScript
+
+const nums = [1,2,3];
+const doubled = nums.map(n => n * 2); // [2,4,6]
+const names = ['Amy','Bob'];
+const greetings = names.map(n => `Hi ${n}`); // ['Hi Amy','Hi Bob']
+What does the following code output using getElementById and addEventListener?
+
+div selector will get everything in a div, p selector will get every p, .p will get everyting with the class of p. Or in other words, adding . infront gets a class. To get an id, you use a hashtag. Ids are unique, they only apply to a single element in the html document.
+
+Typical pattern:
+
+JavaScript
+
+const btn = document.getElementById('btn');
+btn.addEventListener('click', () => console.log('Clicked!'));
+Behavior: When user clicks the element with id 'btn', the callback runs and prints 'Clicked!'.
+
+What does the following line of Javascript do using a # selector?
+
+document.querySelector('#title') selects the first element that matches the CSS selector #title (ID). querySelector accepts any CSS selector (classes, attributes, pseudos).
+
+Which of the following are true? (mark all that are true about the DOM)
+
+The DOM represents the HTML document as a tree of objects.
+
+You can use JavaScript to access and modify DOM elements.
+
+Each HTML element is a node in the DOM.
+
+What is valid javascript syntax for if, else, for, while, switch statements?
+
+JavaScript
+
+if (x > 5) { ... } else { ... }
+for (...) { ... }
+while (...) { ... }
+switch (x) { case 1: ...; break; default: ... }
+What is the correct syntax for creating a javascript object?
+
+JavaScript
+
+const person = { name: "John", age: 30 };
+Is it possible to add new properties to javascript objects?
+
+Yes. Example: person.city = "Provo";
+
+If you want to include JavaScript on an HTML page, which tag do you use?
+
+<script src="script.js"></script>
+
+How would you use JavaScript to select an element with the id of “byu” and change the text color of that element to green?
+
+Option 1 (direct):
+
+JavaScript
+
+document.getElementById('byu').style.color = 'green';
+Option 2 (variable):
+
+JavaScript
+
+const byu = document.getElementById('byu');
+byu.style.color = 'green';
+Explanation: getElementById returns the DOM element. Assigning to a variable avoids querying repeatedly.
+
+Given the following HTML, what JavaScript could you use to set the text "animal" to "crow" and leave the "fish" text unaffected?
+
+HTML:
+
+HTML
+
+<p id="animal">animal</p>
+<p id="fish">fish</p>
+Option 1 (direct):
+
+JavaScript
+
+document.getElementById('animal').textContent = 'crow';
+Option 2 (variable):
+
+JavaScript
+
+const animal = document.getElementById('animal');
+animal.textContent = 'crow';
+Both work; second is clearer if reusing element.
+
+Which of the following correctly describes JSON?
+
+JSON (JavaScript Object Notation) is a text-based format for structured data using key-value pairs.
+
+Example: {"name": "John", "age": 25}
+
+What will the following code using Promises output when executed?
+
+A promise is something that will execute, but not yet.
+
+A promise has two different methods: resolve (accept) and reject.
+
+What does the following code using arrow syntax function declaration do?
+
+JavaScript
+
+const greet = (name) => {
+  return 'Hello, ' + name;
+}
+console.log(greet('Amur'));
+This defines an arrow function named greet that takes one argument name and returns a greeting string.
+
+JavaScript
+
+const square = x => x * x;
+console.log(square(5));
+Here, square takes a number and returns its square. The arrow syntax allows concise one-line functions.
+
+JavaScript
+
+const add = (a, b) => a + b;
+console.log(add(2, 3));
+This function takes two arguments and returns their sum. Arrow functions are common in modern JS, especially with array methods.
+
+What does the following code using map with an array output?
+
+JavaScript
+
+const numbers = [1, 2, 3];
+const doubled = numbers.map(n => n * 2);
+console.log(doubled);
+Output: [2, 4, 6] — The map() function applies a transformation to each element, returning a new array.
+
+JavaScript
+
+const students = [{name: 'Amy'}, {name: 'Ben'}];
+const names = students.map(s => s.name);
+console.log(names);
+Output: ['Amy', 'Ben'] — This extracts the 'name' property from each object. Map doesn't change the original array.
+
+What does the following code output using getElementById and addEventListener?
+
+JavaScript
+
+const button = document.getElementById('myButton');
+button.addEventListener('click', () => {
+  alert('Button clicked!');
+});
+getElementById() selects the HTML element with the specified id. addEventListener() waits for an event (like a click) and runs the provided function when triggered. It doesn’t execute immediately—it listens for the event.
+
+JavaScript
+
+const input = document.getElementById('username');
+input.addEventListener('change', () => {
+  console.log('Input changed');
+});
+Listens for a change in an input field and logs a message when the value changes.
+
+JavaScript
+
+const form = document.getElementById('loginForm');
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  console.log('Form submitted');
+});
+Prevents form refresh on submit and handles the event using JS.
+
+JavaScript
+
+const heading = document.getElementById('title');
+heading.style.color = 'green';
+This example changes the text color of an element with id='title' to green.
+
+What will the following code output when executed using a for loop and console.log?
+
+for (let i = 0; i < 3; i++) { console.log(i); }
+
+This initializes i=0, checks i<3 each loop, runs body, and increments i++ after each iteration. Output: 0, 1, 2.
+
+🌐 Networking & Console
+What does the console command chmod, pwd, cd, ls, vim, nano, mkdir, mv, rm, man, ssh, ps, wget, sudo do?
+
+chmod - change permissions
+
+pwd - print working directory
+
+cd - change directory
+
+ls - list files
+
+vim/nano - text editors
+
+mkdir - make directory
+
+mv - move/rename
+
+rm - remove
+
+man - manual
+
+ssh - remote shell
+
+ps - processes
+
+wget - download files
+
+sudo - run as admin
+
+Which of the following console command creates a remote shell session?
+
+ssh
+
+Which of the following is true when the -la parameter is specified for the ls console command?
+
+ls -la lists all files (including hidden) in long format.
+
+Which of the following is true for the domain name banana.fruit.bozo.click, which is the top level domain, which is a subdomain, which is a root domain?
+
+TLD: .click
+
+Root domain: bozo.click
+
+Subdomain: fruit.bozo.click (and banana.fruit.bozo.click is a nested subdomain)
+
+Is a web certificate is necessary to use HTTPS.
+
+Yes
+
+Can a DNS A record can point to an IP address or another A record.
+
+DNS A records point to an IP address. Cname records point to another A record (or domain name).
+
+Port 443, 80, 22 is reserved for which protocol?
+
+443 - HTTPS
+
+80 - HTTP
+
+22 - SSH
+
+🖼️ Image Display
+How would you display an image with a hyperlink in HTML?
+
+Wrap the <img> element with an <a> tag. Ensure the image file is in the correct folder (public or images/) and the src path points to it.
+
+Example:
+
+HTML
+
+<a href="https://example.com">
   <img src="images/logo.png" alt="Logo">
 </a>
-🎨 CSS & LayoutSelectors#title vs. .grid selector:#title selects an element by ID (must be unique)..grid selects elements by class (can apply to multiple elements).How to change all div elements to have a red background?CSSdiv { 
-  background-color: red; 
-}
-Targeting specific elements:HTML: <p><span class="trouble">trouble</span> double</p>CSS: Use .trouble { color: green; } to target only the text within the span tag.Box Model & DisplayPadding vs. Margin:Padding: Space inside the element (between content and border).Margin: Space outside the element (between border and other elements).CSS Box Model Order (Inside $\rightarrow$ Out):Content $\rightarrow$ Padding $\rightarrow$ Border $\rightarrow$ MarginWhat does padding: 10px 20px; do?Adds 10px top/bottom and 20px left/right inside the element.<span> default display property value: inlineFlexboxImage display using display: flex?By default, the images will be displayed in a row, side by side, unless flex-direction: column; is specified.🚀 JavaScript & DOMSelecting and Modifying ElementsSelecting by ID and changing style (#byu to green):JavaScriptdocument.getElementById('byu').style.color = 'green';
-Selecting with # selector:JavaScriptdocument.querySelector('#title') 
-Action: Selects the first element that matches the CSS selector #title.Note: querySelector accepts any valid CSS selector (.class, #id, tag, etc.).Changing text content (#animal to "crow"):HTML: <p id="animal">animal</p>JavaScriptdocument.getElementById('animal').textContent = 'crow';
-DOM (Document Object Model) TruthsThe DOM represents the HTML document as a tree of objects.You can use JavaScript to access and modify DOM elements.Each HTML element is a node in the DOM.Event Handling (getElementById & addEventListener)Purpose: getElementById() selects the element; addEventListener() sets up a listener that runs a function (callback) only when the specified event occurs (e.g., a 'click').Typical Pattern:JavaScriptconst btn = document.getElementById('btn');
-btn.addEventListener('click', () => console.log('Clicked!'));
-// Behavior: When user clicks the element with id 'btn', the message prints.
-Functions & Array MethodsArrow Function (=>) Syntax:A compact function syntax. (a, b) => a + b is a function with parameters a and b that returns a+b.Example 1: const add = (a, b) => a + b;Example 2 (Block Form): const square = x => { return x * x; }Note: Arrow functions do not bind their own this and aren't suitable for constructors.map() with an array:map() transforms every element of an array and returns a NEW array without changing the original.Example:JavaScriptconst numbers = [1, 2, 3];
-const doubled = numbers.map(n => n * 2); 
-// Output: [2, 4, 6]
-JavaScript Syntax & ObjectsTag to include JavaScript on a page: <script src="script.js"></script>Valid Control Flow Syntax:JavaScriptif (x > 5) { ... } else { ... }
-for (let i = 0; i < 10; i++) { ... }
-while (condition) { ... }
-switch (x) { case 1: ...; break; default: ... }
-Correct Syntax for creating an object:JavaScriptconst person = { name: "John", age: 30 };
-Adding new properties to objects: Yes. (e.g., person.city = "Provo";)🌐 Networking & ProtocolsDomains & CertificatesDomain Name Breakdown (banana.fruit.bozo.click):TLD (Top-Level Domain): .clickRoot Domain: bozo.clickSubdomain: fruit.bozo.clickIs a web certificate necessary for HTTPS? Yes.DNS A vs. CNAME Records:A records point to an IP address.CNAME records point to another A record (another domain name).Protocol Ports:Port 443: HTTPSPort 80: HTTPPort 22: SSHJSONWhat is JSON?JavaScript Object Notation is a text-based format for structured data using key-value pairs.Example: {"name": "John", "age": 25}🐧 Console/Terminal Commands (Linux/macOS)CommandActionRelated FactschmodChange file permissions (mode).pwdPrint working directory (show current folder path).cdChange directory (navigate folders).lsList files and directories.ls -la lists all files (including hidden) in long format.vim / nanoText editors.mkdirMake directory (create a new folder).mvMove or rename files/directories.rmRemove files or directories.manShow the manual/documentation for a command.sshCreate a secure remote shell session.psList current processes.wgetDownload files from the internet.sudoSuper user do (run a command as administrator/root).💡 MiscellaneousPromisesA Promise represents an operation that hasn't completed yet but is expected to produce a value in the future.It has two outcomes: resolve (success) or reject (failure).Loopsfor loop output: for (let i = 0; i < 3; i++) { console.log(i); }Output: 0, 1, 2 (It runs the loop while i is less than 3).
+Example with folder scheme:
+
+project/
+├── index.html
+├── images/
+│   └── logo.png
+└── css/
+    └── styles.css
+If using a framework, the image may need to be in a 'public' or 'static' folder so it is served directly.
+
+Example using external URL:
+
+HTML
+
+<a href="https://openai.com">
+  <img src="https://example.com/image.png" alt="External image">
+</a>
