@@ -16,6 +16,9 @@ export function Workouts() {
 
   const currentDay = new Date().toLocaleDateString('en-US', { weekday: 'long' });
 
+  const selectDay = (day) => {
+    setSelectedDay(day);
+  };
 
   return (
     <main className="container-fluid bg-dark text-light d-flex flex-column align-items-center mt-5 pt-3">
