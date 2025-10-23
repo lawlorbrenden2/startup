@@ -20,46 +20,45 @@ export function Workouts() {
     setSelectedDay(day);
   };
 
+  const addExercise = (exercise) => {
+    setWorkouts(prev =>
+      prev.map(w =>
+        w.day === selectedDay
+          ? { ...w, exercises: [...w.exercises, exercise] }
+          : w
+      )
+    );
+  };
+
+  const removeExercise = (exercise) => {
+    setWorkouts(prev =>
+      prev.map(w =>
+        w.day === selectedDay
+          ? { ...w, exercises: w.exercises.filter(e => e !== exercise) }
+          : w
+      )
+    );
+  };
+
+
   return (
     <main className="container-fluid bg-dark text-light d-flex flex-column align-items-center mt-5 pt-3">
       <div className="content-wrapper w-75">
         <h2>My Workout Plan</h2>
 
         <table className="table table-hover mt-3">
-          <thead>
-            <tr>
-              <th scope="col">Day</th>
-              <th scope="col">Workout Type</th>
-            </tr>
-          </thead>
           <tbody>
-            <tr className="table-active"> <td>Monday</td>
-              <td>Push</td>
-            </tr>
-            <tr>
-              <td>Tuesday</td>
-              <td>Pull</td>
-            </tr>
-            <tr>
-              <td>Wednesday</td>
-              <td>Legs</td>
-            </tr>
-            <tr>
-              <td>Thursday</td>
-              <td>Push</td>
-            </tr>
-            <tr>
-              <td>Friday</td>
-              <td>Pull</td>
-            </tr>
-            <tr>
-              <td>Saturday</td>
-              <td>Legs</td>
-            </tr>
-            <tr>
-              <td>Sunday</td>
-              <td>Rest</td>
-            </tr>
+            {workouts.map((workout) => (
+              <tr
+                key={workout.day}
+                className={workout.day === currentDay ? 'table-active' : ''}
+                onClick={() => selectDay(workout.day)}
+                style={{ cursor: 'pointer' }}
+              >
+                <td>{workout.day}</td>
+                <td>{workout.type}</td>   
+              </tr>
+            ))}
           </tbody>
         </table>
 
