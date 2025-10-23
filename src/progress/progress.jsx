@@ -1,6 +1,16 @@
 import React from 'react';
 
+
+
 export function Progress() {
+
+  const [selectedFriend, setSelectedFriend] = React.useState(null);
+  const [selectedExercise, setSelectedExercise] = React.useState(null);
+  const [friends, setFriends] = React.useState(['Me', 'Friend 1', 'Friend 2', 'Friend 3']);
+  const [exercises, setExercises] = React.useState(['Bench Press', 'Squat', 'Deadlift']);
+  const [graphUrl, setGraphUrl] = React.useState('graph_up.jpg');
+
+
   return (
     <main className="container-fluid bg-dark text-light d-flex flex-column align-items-center mt-5 pt-3">
       <div className="content-wrapper">
@@ -12,10 +22,13 @@ export function Progress() {
               Friends
             </button>
             <ul className="dropdown-menu">
-              <li><a className="dropdown-item" href="#">Friend 1</a></li>
-              <li><a className="dropdown-item" href="#">Friend 2</a></li>
-              <li><a className="dropdown-item" href="#">Friend 3</a></li>
-              <li><a className="dropdown-item" href="#">Friend 4</a></li>
+              {friends.map((friend, index) => ( 
+                <li key={index}>
+                  <button className="dropdown-item" onClick={() => setSelectedFriend(friend)}>
+                    {friend}
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -24,15 +37,24 @@ export function Progress() {
               Exercises
             </button>
             <ul className="dropdown-menu">
-              <li><a className="dropdown-item" href="#">Bench Press</a></li>
-              <li><a className="dropdown-item" href="#">Squat</a></li>
+              {exercises.map((exercise, index) => ( 
+                <li key={index}>
+                  <button className="dropdown-item" onClick={() => setSelectedExercise(exercise)}>
+                    {exercise}
+                  </button>
+                </li>
+              ))}              
             </ul>
           </div>
         </div>
       </div>
-      <h2>Bench Press</h2>
+      <h2>{selectedExercise || "Select an exercise"}</h2>
       <div className="graph my-3">
-        <img src="graph_up.jpg" className="img-fluid rounded" alt="Bench Press Progress Graph" />
+        {graphUrl ? (
+          <img src={graphUrl} className="img-fluid rounded" alt={`${selectedExercise} Progress Graph`} />
+        ) : (
+          <p>No graph to display</p>
+        )}
       </div>
     </main>
   );

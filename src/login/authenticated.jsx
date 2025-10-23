@@ -13,7 +13,7 @@ export function Authenticated(props) {
 
   return (
     <div>
-      <div className='userNameDisplay'>{props.userName}</div>
+      <div className='userNameDisplay'>Current User: {props.userName}</div>
         <div className='dropdown-row'>
           <Button className="btn btn-primary" variant='primary' onClick={() => navigate('/progress')}>
             Begin
