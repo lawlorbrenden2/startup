@@ -3,25 +3,38 @@ import React from 'react';
 export function Reactions() {
 
   const [reactions, setReactions] = React.useState([
-    { friend: 'Friend 1', type: '🔥' },
-    { friend: 'Friend 2', type: '🔥' },
-    { friend: 'Friend 3', type: '❄️' },
-    { friend: 'Friend 4', type: '💪' },
+    { friend: 'Friend 1', emoji: '🔥', time: new Date('2025-10-22T14:00:00') },
+    { friend: 'Friend 2', emoji: '🔥', time: new Date('2025-10-22T14:05:00') },
+    { friend: 'Friend 3', emoji: '❄️', time: new Date('2025-10-22T13:50:00') },
+    { friend: 'Friend 4', emoji: '💪', time: new Date('2025-10-20T14:02:00') }, 
+    { friend: 'Friend 1', emoji: '💪', time: new Date('2025-10-21T14:02:00') },
+    { friend: 'Friend 4', emoji: '🔥', time: new Date('2025-10-18T14:02:00') },
+    { friend: 'Friend 8', emoji: '🔥', time: new Date('2025-9-14T14:02:00') },// not displayed as it's been longer than a week
   ]);
+
+  const now = new Date();
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // convert to milliseconds
+  
+  // Filter reactions from the last 7 days
+  const recentReactions = reactions.filter(reaction => reaction.time >= sevenDaysAgo);
 
   return (
     <main className="container-fluid bg-dark text-light d-flex flex-column align-items-center mt-5 pt-3">
       <div className="content-wrapper w-75">
         <h1>Reactions</h1>
         <div className="reaction-cards d-flex flex-column gap-3 mt-3">
-          {reactions.map((reaction, index) => (
-            <div key={index} className="card bg-secondary text-light">
-              <div className="card-body d-flex justify-content-between align-items-center">
-                <h5 className="card-title mb-0">{reaction.friend}</h5>
-                <span className="reaction-type fs-2">{reaction.type}</span>
+          {recentReactions.length > 0 ? (
+            recentReactions.map((reaction, index) => (
+              <div key={index} className="card bg-secondary text-light">
+                <div className="card-body d-flex justify-content-between align-items-center">
+                  <h5 className="card-title mb-0">{reaction.friend}</h5>
+                  <span className="reaction-type fs-2">{reaction.emoji}</span>
+                </div>
               </div>
-            </div>
-          ))}
+          ))
+          ) : (
+            <p>No reactions in the last 7 days 😭.</p>
+          )}
         </div>
 
       </div>

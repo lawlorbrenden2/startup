@@ -16,6 +16,25 @@ header {
   font-size: 18px;
   padding-bottom: 10px;
 }
+.reaction-cards {
+  max-height: 400px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.reaction-cards::-webkit-scrollbar {
+  display: none;
+}
+
+.reaction-cards {
+  scroll-snap-type: y mandatory;
+}
+
+.reaction-cards .card {
+  scroll-snap-align: start;
+}
 
 main {
   flex: 1 calc(100vh - 110px);
