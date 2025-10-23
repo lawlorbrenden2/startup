@@ -15,6 +15,8 @@ export function Progress() {
     <main className="container-fluid bg-dark text-light d-flex flex-column align-items-center mt-5 pt-3">
       <div className="content-wrapper">
         <h1>Progress</h1>
+        {selectedFriend && <h4>Current user: {selectedFriend}</h4>}
+
 
         <div className="dropdown-row d-flex justify-content-center my-3">
           <div className="dropdown me-3">
