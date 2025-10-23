@@ -85,9 +85,7 @@ I decided to keep that placeholder paragraph as it basically summed up my experi
 
 ## React Part 2: Reactivity
 
-This was a lot of fun to see it all come together. I had to keep remembering to use React state instead of just manipulating the DOM directly.
-
-Handling the toggling of the checkboxes was particularly interesting.
+This was certainly a lot of work, and I'm still not 100% certain I accounted for everything. I tried my best to use lots of hooks whenever I could, and I have learned a lot about them.
 
 ```jsx
 <div className="input-group sound-button-container">

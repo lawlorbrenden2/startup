@@ -103,8 +103,8 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **All functionality implemented or mocked out** - I did not complete this part of the deliverable.
-- [ ] **Hooks** - I did not complete this part of the deliverable.
+- [x] **All functionality implemented or mocked out** - Although I did get everything working, I feel like I may have missed some functionality in some places, and I'm not 100% sure that I'm following all best practices
+- [x] **Hooks** - Several useState and useEffect hooks littered all around the project
 
 ## 🚀 Service deliverable
 
