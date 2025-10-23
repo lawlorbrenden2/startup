@@ -20,6 +20,10 @@ export function Reactions() {
       setChartData(newData);
   }, [selectedFriend, selectedExercise]);
 
+  const selectDay = (day) => {
+    setSelectedDay(day);
+  };
+
   const now = new Date();
   const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // convert to milliseconds
   
