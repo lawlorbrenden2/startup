@@ -9,16 +9,23 @@ export function Progress() {
   const [exercises, setExercises] = React.useState(['Bench Press', 'Squat', 'Deadlift']);
   const emojiOptions = ['🔥', '💪', '❄️', '❤️', '🎯', '🏋️'];
   const [sentReactions, setSentReactions] = React.useState([]);
+  const [newFriend, setNewFriend] = React.useState('');
+
+  const addFriend = (friend) => {
+    if (!friend) return;
+    setFriends((prevFriends) => [...prevFriends, friend]);
+    setNewFriend('');
+  }
 
 
   const chartData = [
-    { date: 'M', weight: Math.floor(Math.random() * 50 + 50) },
-    { date: 'Tu', weight: Math.floor(Math.random() * 50 + 50) },
-    { date: 'W', weight: Math.floor(Math.random() * 50 + 50) },
-    { date: 'Th', weight: Math.floor(Math.random() * 50 + 50) },
-    { date: 'F', weight: Math.floor(Math.random() * 50 + 50) },
-    { date: 'Sat', weight: Math.floor(Math.random() * 50 + 50) },
-    { date: 'Sun', weight: Math.floor(Math.random() * 50 + 50) },
+    { date: 'M', weight: Math.floor(Math.random() * 50 + 40) },
+    { date: 'Tu', weight: Math.floor(Math.random() * 50 + 41) },
+    { date: 'W', weight: Math.floor(Math.random() * 50 + 42) },
+    { date: 'Th', weight: Math.floor(Math.random() * 50 + 43) },
+    { date: 'F', weight: Math.floor(Math.random() * 50 + 44) },
+    { date: 'Sat', weight: Math.floor(Math.random() * 50 + 45) },
+    { date: 'Sun', weight: Math.floor(Math.random() * 50 + 46) },
   ];
 
   const sendReaction = (emoji) => {
@@ -40,6 +47,22 @@ export function Progress() {
     <main className="container-fluid bg-dark text-light d-flex flex-column align-items-center mt-5 pt-3">
       <div className="content-wrapper">
         <h1>Progress</h1>
+
+      {/* I realized that there needed to be a way to add friends, 
+        not sure if this is the best way to do it. I might decide to add a whole new page later */}
+        <div className="add-friend mb-3 d-flex justify-content-center"> 
+          <input
+            type="text"
+            className="form-control w-auto"
+            placeholder="Add friends"
+            value={newFriend}
+            onChange={(e) => setNewFriend(e.target.value)}
+          />
+          <button className="btn btn-primary" onClick={() => addFriend(newFriend)}>
+            Add
+          </button>
+        </div>
+
         <div className="dropdown-row d-flex justify-content-center my-3">
           <div className="dropdown me-3">
             <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -74,24 +97,37 @@ export function Progress() {
       </div>
 
       {selectedFriend && selectedExercise && (
-        <div className="emoji-reactions d-flex justify-content-center gap-2 mb-3">
-          <h5 className="me-3">Send {selectedFriend} a reaction:</h5>
-          {emojiOptions.map((emoji) => (
+        <div className="emoji-reactions text-center mb-3">
+          <label className="d-block mb-2">Send {selectedFriend} a reaction!</label>
+          <div className="dropdown d-inline-block">
             <button
-              key={emoji}
-              className="btn btn-secondary btn-lg"
-              onClick={() => sendReaction(emoji)}
+              className="btn btn-primary dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
             >
-              {emoji}
+              Select Reaction
             </button>
-          ))}
+            <ul className="dropdown-menu">
+              {emojiOptions.map((emoji) => (
+                <li key={emoji}>
+                  <button
+                    className="dropdown-item text-center"
+                    onClick={() => sendReaction(emoji)}
+                  >
+                    {emoji}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
 
-      <h4>{selectedExercise || "Select a user and an exercise"}</h4>
-      {selectedFriend && selectedExercise && (
-        <h4>{selectedFriend} - {selectedExercise}</h4>
-      )}
+      <h4>
+        {selectedFriend && selectedExercise
+          ? `${selectedFriend} - ${selectedExercise}`
+          : "Select a user and an exercise"}
+      </h4>
 
 
       {/* This graph needs a lot more work, such as functionality to change the date range and such, will add when getting real dynamic data */}
