@@ -10,6 +10,13 @@ header {
   flex-direction: column;
 }
 
+.userNameDisplay {
+  align-items: center;
+  text-align: center;
+  font-size: 18px;
+  padding-bottom: 10px;
+}
+
 main {
   flex: 1 calc(100vh - 110px);
   display: flex;
@@ -28,6 +35,17 @@ main {
   text-align: center;
 }
 
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+}
+
+
 .graph {
   max-height: 45vh;
   max-width: 100%;
@@ -36,6 +54,14 @@ main {
 h1 {
   font-size: 48px;
   padding: 5px;
+  align-items: center;
+  text-align: center;
+}
+
+h3 {
+  padding: 5px;
+  align-items: center;
+  text-align: center;
 }
 
 main h2 {

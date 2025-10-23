@@ -14,12 +14,14 @@ export function Authenticated(props) {
   return (
     <div>
       <div className='userNameDisplay'>{props.userName}</div>
-      <Button className="btn btn-primary" variant='primary' onClick={() => navigate('/progress')}>
-        Begin
-      </Button>
-      <Button className="btn btn-dark" variant='secondary' onClick={() => logout()}>
-        Sign out
-      </Button>
+        <div className='dropdown-row'>
+          <Button className="btn btn-primary" variant='primary' onClick={() => navigate('/progress')}>
+            Begin
+          </Button>
+          <Button className="btn btn-dark" variant='secondary' onClick={() => logout()}>
+            Sign out
+          </Button>
+        </div>
     </div>
   );
 }

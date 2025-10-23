@@ -19,7 +19,7 @@ export function Unauthenticated(props) {
   
   return (
     <>
-      <div>
+      <div className="auth-form">
         <div className='input-group mb-3'>
           <span className='input-group-text'>@</span>
           <input className='form-control' type='text' value={userName} onChange={(e) => setUserName(e.target.value)} placeholder='your@email.com' />
@@ -28,12 +28,14 @@ export function Unauthenticated(props) {
           <span className='input-group-text'>🔒</span>
           <input className='form-control' type='password' onChange={(e) => setPassword(e.target.value)} placeholder='password' />
         </div>
-        <Button className="btn btn-primary" variant='primary' onClick={() => loginUser()} disabled={!userName || !password}>
-          Sign in
-        </Button>
-        <Button className="btn btn-dark" variant='secondary' onClick={() => createUser()} disabled={!userName || !password}>
-          Create
-        </Button>
+        <div className='dropdown-row'>
+          <Button className="btn btn-primary" variant='primary' onClick={() => loginUser()} disabled={!userName || !password}>
+            Sign in
+          </Button>
+          <Button className="btn btn-dark" variant='secondary' onClick={() => createUser()} disabled={!userName || !password}>
+            Create
+          </Button>
+        </div>
       </div>
 
       <MessageDialog message={displayError} onHide={() => setDisplayError(null)} />
