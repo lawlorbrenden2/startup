@@ -9,7 +9,7 @@ export function Reactions() {
     { friend: 'Friend 4', emoji: '💪', time: new Date('2025-10-20T14:02:00') }, 
     { friend: 'Friend 1', emoji: '💪', time: new Date('2025-10-21T14:02:00') },
     { friend: 'Friend 4', emoji: '🔥', time: new Date('2025-10-18T14:02:00') },
-    { friend: 'Friend 8', emoji: '🔥', time: new Date('2025-9-14T14:02:00') },// not displayed as it's been longer than a week
+    { friend: 'Friend 8', emoji: '🔥', time: new Date('2025-9-14T14:02:00') }, // not displayed as it's been longer than a week
   ]);
 
   const now = new Date();
@@ -17,6 +17,13 @@ export function Reactions() {
   
   // Filter reactions from the last 7 days
   const recentReactions = reactions.filter(reaction => reaction.time >= sevenDaysAgo);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+
+    }, 60000); // Update every minute
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <main className="container-fluid bg-dark text-light d-flex flex-column align-items-center mt-5 pt-3">
