@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function Login() {
+export function Login({ userName, authState, onAuthChange }) {
   return (
     <main className="container-fluid bg-dark text-light d-flex flex-column align-items-center mt-5 pt-3">
       <div className="content-wrapper">
