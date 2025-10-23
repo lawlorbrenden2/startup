@@ -2,7 +2,6 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './app.css';
-
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
 import { Login } from './login/login';
 import { Progress } from './progress/progress';
@@ -10,7 +9,15 @@ import { Reactions } from './reactions/reactions';
 import { Workouts } from './workouts/workouts';
 
 
-export default function App() {
+
+
+function App() {
+
+  const [userName, setUserName] = React.useState(localStorage.getItem('userName') || '');
+  const currentAuthState = userName ? AuthState.Authenticated : AuthState.Unauthenticated;
+  const [authState, setAuthState] = React.useState(currentAuthState);
+
+
   return (
     <BrowserRouter>
       <div className="app bg-dark text-light">
@@ -64,3 +71,5 @@ export default function App() {
 function NotFound() {
   return <main className="container-fluid bg-secondary text-center">404: Return to sender. Address unknown.</main>;
 }
+
+export default App;
