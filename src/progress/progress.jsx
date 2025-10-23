@@ -1,7 +1,5 @@
 import React from 'react';
 
-
-
 export function Progress() {
 
   const [selectedFriend, setSelectedFriend] = React.useState(null);
@@ -9,6 +7,23 @@ export function Progress() {
   const [friends, setFriends] = React.useState(['Me', 'Friend 1', 'Friend 2', 'Friend 3']);
   const [exercises, setExercises] = React.useState(['Bench Press', 'Squat', 'Deadlift']);
   const [graphUrl, setGraphUrl] = React.useState('graph_up.jpg');
+  const emojiOptions = ['🔥', '💪', '❄️', '❤️', '🎯', '🏋️'];
+
+  const sendReaction = (emoji) => {
+    if (!selectedFriend || !selectedExercise) return;
+
+    const newReaction = {
+      friend: selectedFriend,
+      exercise: selectedExercise,
+      emoji: emoji,
+      time: new Date(),
+    };
+
+    setSentReactions((prevReactions) => [...prevReactions, newReaction]);
+    console.log(`Sent reaction: ${emoji} to ${selectedFriend} for ${selectedExercise}`);
+  }
+
+
 
 
   return (
@@ -58,6 +73,25 @@ export function Progress() {
           <p>No graph to display</p>
         )}
       </div>
+      {selectedFriend && selectedExercise && (
+        <div className="reaction-dropdown mt-3 text-center">
+          <p>Send your friend a reaction!</p>
+          <div className="dropdown">
+            <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              Select Reaction
+            </button>
+            <ul className="dropdown-menu">
+              {emojiOptions.map((emoji, index) => (
+                <li key={index}>
+                  <button className="dropdown-item" onClick={() => sendReaction(emoji)}>
+                    {emoji}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

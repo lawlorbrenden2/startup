@@ -20,8 +20,8 @@ export function Reactions() {
 
   React.useEffect(() => {
     const interval = setInterval(() => {
-
-    }, 60000); // Update every minute
+      setReactions(prev => [...prev]); 
+    }, 60000);
     return () => clearInterval(interval);
   }, []);
 
