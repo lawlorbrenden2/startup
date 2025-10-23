@@ -7,7 +7,7 @@ import { Login } from './login/login';
 import { Progress } from './progress/progress';
 import { Reactions } from './reactions/reactions';
 import { Workouts } from './workouts/workouts';
-import { AuthState } from '../../simon-react/src/login/authState';
+import { AuthState } from './login/authState';
 
 
 function App() {
