@@ -1,4 +1,5 @@
 import React from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export function Progress() {
 
@@ -8,6 +9,15 @@ export function Progress() {
   const [exercises, setExercises] = React.useState(['Bench Press', 'Squat', 'Deadlift']);
   const [graphUrl, setGraphUrl] = React.useState('graph_up.jpg');
   const emojiOptions = ['🔥', '💪', '❄️', '❤️', '🎯', '🏋️'];
+
+  // Sample data (replace with real exercise progress later)
+  const chartData = [
+    { date: 'Day 1', weight: 50 },
+    { date: 'Day 2', weight: 55 },
+    { date: 'Day 3', weight: 60 },
+    { date: 'Day 4', weight: 65 },
+    { date: 'Day 5', weight: 70 },
+  ];
 
   const sendReaction = (emoji) => {
     if (!selectedFriend || !selectedExercise) return;
@@ -22,8 +32,6 @@ export function Progress() {
     setSentReactions((prevReactions) => [...prevReactions, newReaction]);
     console.log(`Sent reaction: ${emoji} to ${selectedFriend} for ${selectedExercise}`);
   }
-
-
 
 
   return (
@@ -66,12 +74,17 @@ export function Progress() {
         </div>
       </div>
       <h2>{selectedExercise || "Select an exercise"}</h2>
-      <div className="graph my-3">
-        {graphUrl ? (
-          <img src={graphUrl} className="img-fluid rounded" alt={`${selectedExercise} Progress Graph`} />
-        ) : (
-          <p>No graph to display</p>
-        )}
+      <div className="graph mb-3">
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="weight" stroke="#6d0fb0" strokeWidth={2} />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
       {selectedFriend && selectedExercise && (
         <div className="reaction-dropdown mt-3 text-center">
