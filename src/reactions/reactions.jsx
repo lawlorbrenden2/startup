@@ -2,15 +2,23 @@ import React from 'react';
 
 export function Reactions() {
 
-  const [reactions, setReactions] = React.useState([
-    { friend: 'Friend 1', emoji: '🔥', time: new Date('2025-10-22T14:00:00') },
-    { friend: 'Friend 2', emoji: '🔥', time: new Date('2025-10-22T14:05:00') },
-    { friend: 'Friend 3', emoji: '❄️', time: new Date('2025-10-22T13:50:00') },
-    { friend: 'Friend 4', emoji: '💪', time: new Date('2025-10-20T14:02:00') }, 
-    { friend: 'Friend 1', emoji: '💪', time: new Date('2025-10-21T14:02:00') },
-    { friend: 'Friend 4', emoji: '🔥', time: new Date('2025-10-18T14:02:00') },
-    { friend: 'Friend 8', emoji: '🔥', time: new Date('2025-9-14T14:02:00') }, // not displayed as it's been longer than a week
-  ]);
+  const [chartData, setChartData] = React.useState([]);
+  
+  React.useEffect(() => {
+    if (!selectedFriend || !selectedExercise) return;
+
+    const newData = [
+      { friend: 'Friend 1', emoji: '🔥', time: new Date('2025-10-22T14:00:00') },
+      { friend: 'Friend 2', emoji: '🔥', time: new Date('2025-10-22T14:05:00') },
+      { friend: 'Friend 3', emoji: '❄️', time: new Date('2025-10-22T13:50:00') },
+      { friend: 'Friend 4', emoji: '💪', time: new Date('2025-10-20T14:02:00') }, 
+      { friend: 'Friend 1', emoji: '💪', time: new Date('2025-10-21T14:02:00') },
+      { friend: 'Friend 4', emoji: '🔥', time: new Date('2025-10-18T14:02:00') },
+      { friend: 'Friend 8', emoji: '🔥', time: new Date('2025-9-14T14:02:00') },
+    ];
+
+      setChartData(newData);
+  }, [selectedFriend, selectedExercise]);
 
   const now = new Date();
   const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // convert to milliseconds
