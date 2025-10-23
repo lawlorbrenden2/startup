@@ -79,7 +79,7 @@ return (
     <div className="content-wrapper w-75">
       <h2>My Workout Plan</h2>
 
-      <table className="table table-hover mt-3">
+      <table className="table table-dark table-hover mt-3">
         <thead>
           <tr>
             <th>Day</th>
@@ -103,32 +103,33 @@ return (
 
       {selectedWorkout ? (
         <div className="mt-4">
-          <h4>{selectedDay} Exercises</h4>
+          <h3>{selectedDay} Exercises</h3>
 
-          <div className="mb-2">
-            <label className="me-2">Workout Type:</label>
-            <div className="dropdown d-inline-block">
-              <button
-                className="btn btn-primary dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-              >
-                {selectedWorkout.type}
-              </button>
-              <ul className="dropdown-menu">
-                {['Push', 'Pull', 'Legs', 'Upper Body', 'Lower Body', 'Abs', 'Rest'].map((type) => (
-                  <li key={type}>
-                    <button
-                      className="dropdown-item"
-                      onClick={() => updateWorkoutType(selectedDay, type)}
-                    >
-                      {type}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+            <div className="mb-3 text-center">
+              <label className="d-block mb-2">Workout Type:</label>
+              <div className="dropdown d-inline-block">
+                <button
+                  className="btn btn-primary dropdown-toggle"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                >
+                  {selectedWorkout.type}
+                </button>
+                <ul className="dropdown-menu dropdown-menu-center">
+                  {['Push', 'Pull', 'Legs', 'Upper Body', 'Lower Body', 'Abs', 'Rest'].map((type) => (
+                    <li key={type}>
+                      <button
+                        className="dropdown-item text-center"
+                        onClick={() => updateWorkoutType(selectedDay, type)}
+                      >
+                        {type}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
+
 
           <ul>
             {selectedWorkout.exercises.map((ex, idx) => (
@@ -142,7 +143,7 @@ return (
             ))}
           </ul>
 
-          <div className="mt-2 d-flex gap-2">
+          <div className="mt-2 d-flex gap-2 align-items-cente justify-content-center">
             <input
               type="text"
               value={newExercise}

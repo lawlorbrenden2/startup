@@ -7,8 +7,9 @@ export function Progress() {
   const [selectedExercise, setSelectedExercise] = React.useState(null);
   const [friends, setFriends] = React.useState(['Me', 'Friend 1', 'Friend 2', 'Friend 3']);
   const [exercises, setExercises] = React.useState(['Bench Press', 'Squat', 'Deadlift']);
-  const [graphUrl, setGraphUrl] = React.useState('graph_up.jpg');
   const emojiOptions = ['🔥', '💪', '❄️', '❤️', '🎯', '🏋️'];
+  const [sentReactions, setSentReactions] = React.useState([]);
+
 
   const chartData = [
     { date: 'M', weight: Math.floor(Math.random() * 50 + 50) },
@@ -71,8 +72,23 @@ export function Progress() {
           </div>
         </div>
       </div>
-      <h4>{selectedExercise || "Select a user and an exercise"}</h4>
 
+      {selectedFriend && selectedExercise && (
+        <div className="emoji-reactions d-flex justify-content-center gap-2 mb-3">
+          <h5 className="me-3">Send {selectedFriend} a reaction:</h5>
+          {emojiOptions.map((emoji) => (
+            <button
+              key={emoji}
+              className="btn btn-secondary btn-lg"
+              onClick={() => sendReaction(emoji)}
+            >
+              {emoji}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <h4>{selectedExercise || "Select a user and an exercise"}</h4>
       {selectedFriend && selectedExercise && (
         <h4>{selectedFriend} - {selectedExercise}</h4>
       )}
