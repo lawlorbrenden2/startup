@@ -6,9 +6,11 @@ const app = express();
 
 const authCookieName = 'token';
 
-// The scores and users are saved in memory and disappear whenever the service is restarted.
+// These are saved in memory and disappear whenever the service is restarted.
 let users = [];
-let scores = [];
+let workouts = [];
+let exercises = [];
+let friends = [];
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
