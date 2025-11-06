@@ -5,11 +5,9 @@ export function Workouts() {
   const [selectedDay, setSelectedDay] = React.useState(null);
   const [newExercise, setNewExercise] = React.useState('');
 
-  // Load workouts from localStorage
   React.useEffect(() => {
     const stored = localStorage.getItem('workouts');
-    // NOTE: If you were using the old code and it saved data, 
-    // you must clear local storage for the new object structure to initialize correctly.
+
     if (stored) setWorkouts(JSON.parse(stored));
     else
       setWorkouts([
@@ -33,7 +31,6 @@ export function Workouts() {
   const addExercise = (exercise) => {
     if (!exercise || !selectedDay) return;
     
-    // Check for duplicates before adding
     const currentWorkout = workouts.find(w => w.day === selectedDay);
     if (currentWorkout && currentWorkout.exercises.some(e => e.name.toLowerCase() === exercise.toLowerCase())) {
         alert(`${exercise} is already in the list for ${selectedDay}.`);

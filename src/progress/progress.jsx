@@ -3,40 +3,30 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 
 export function Progress() {
 
-  const [selectedFriend, setSelectedFriend] = React.useState(null);
+  const [selectedFriend, setSelectedFriend] = React.useState('Me'); // Default to 'Me' for better UX
   const [selectedExercise, setSelectedExercise] = React.useState(null);
-  const [friends, setFriends] = React.useState(['Me', 'Friend 1', 'Friend 2', 'Friend 3']);
-  const [exercises, setExercises] = React.useState(['Bench Press', 'Squat', 'Deadlift']);
+  const [friends, setFriends] = React.useState(['Me']); // Default friend list with 'Me'  
+  // REMOVED: const [exercises, setExercises] = React.useState(['Bench Press', 'Squat', 'Deadlift']); 
   const emojiOptions = ['🔥', '💪', '❄️', '❤️', '🎯', '🏋️'];
   const [sentReactions, setSentReactions] = React.useState([]);
   const [newFriend, setNewFriend] = React.useState('');
-  const [workouts, setWorkouts] = React.useState([]);
+  const [workouts, setWorkouts] = React.useState([]); 
 
   const addFriend = (friend) => {
-    if (!friend) return;
+    if (!friend || friends.includes(friend)) return;
     setFriends((prevFriends) => [...prevFriends, friend]);
     setNewFriend('');
   }
 
-
-  // const chartData = [
-  //   { date: 'M', weight: Math.floor(Math.random() * 50 + 40) },
-  //   { date: 'Tu', weight: Math.floor(Math.random() * 50 + 41) },
-  //   { date: 'W', weight: Math.floor(Math.random() * 50 + 42) },
-  //   { date: 'Th', weight: Math.floor(Math.random() * 50 + 43) },
-  //   { date: 'F', weight: Math.floor(Math.random() * 50 + 44) },
-  //   { date: 'Sat', weight: Math.floor(Math.random() * 50 + 45) },
-  //   { date: 'Sun', weight: Math.floor(Math.random() * 50 + 46) },
-  // ];
-
+  // Load workouts from localStorage on mount
   React.useEffect(() => {
     const storedData = localStorage.getItem('workouts');
     if (storedData) {
-      const parsed = JSON.parse(storedData);
-      setWorkouts(parsed);
+      setWorkouts(JSON.parse(storedData));
     }
   }, []);
 
+  // Listen for changes in localStorage from other tabs/components
   React.useEffect(() => {
     const handleStorageChange = () => {
       const stored = localStorage.getItem('workouts');
@@ -46,26 +36,57 @@ export function Progress() {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
+  // ✅ New Logic: Dynamically generate the list of unique exercises
+  const dynamicExerciseList = React.useMemo(() => {
+      if (!workouts || workouts.length === 0) return [];
 
+      const uniqueExercises = new Set();
+      
+      workouts.forEach((dayWorkout) => {
+          dayWorkout.exercises.forEach((exercise) => {
+              uniqueExercises.add(exercise.name);
+          });
+      });
+
+      return Array.from(uniqueExercises).sort();
+  }, [workouts]);
+
+
+  // Logic to pull historical data for the chart
   const chartData = React.useMemo(() => {
-    if (!selectedExercise || !workouts || Object.keys(workouts).length === 0) return [];
+    if (!selectedExercise || !workouts || workouts.length === 0) return [];
 
     const dataPoints = [];
 
-    Object.entries(workouts).forEach(([type, details]) => {
-      details.exercises.forEach((e, idx) => {
-        if (e.startsWith(selectedExercise) && e.includes('Result:')) {
-          const match = e.match(/Result:\s*(\d+)/);
-          if (match) {
-            dataPoints.push({ date: type, weight: parseInt(match[1]) });
-          }
-        }
-      });
+    workouts.forEach((dayWorkout) => {
+      const matchingExercise = dayWorkout.exercises.find(
+        (e) => e.name === selectedExercise
+      );
+
+      if (matchingExercise) {
+        matchingExercise.results.forEach((result) => {
+          dataPoints.push({ 
+            date: result.date,
+            weight: result.value
+          });
+        });
+      }
     });
 
-  return dataPoints;
-}, [selectedExercise, workouts]);
+    dataPoints.sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    // Deduplicate points (keep the latest reported weight for a given date)
+    const uniqueData = {};
+    dataPoints.forEach(item => {
+        uniqueData[item.date] = item.weight; 
+    });
 
+    return Object.keys(uniqueData).map(date => ({
+        date: date, 
+        weight: uniqueData[date]
+    }));
+
+  }, [selectedExercise, workouts]);
 
 
   const sendReaction = (emoji) => {
@@ -88,9 +109,8 @@ export function Progress() {
       <div className="content-wrapper">
         <h1>Progress</h1>
 
-      {/* I realized that there needed to be a way to add friends, 
-        not sure if this is the best way to do it. I might decide to add a whole new page later */}
-        <div className="add-friend mb-3 d-flex justify-content-center"> 
+      {/* Friend Add Input: Already dynamic with state updates */}
+        <div className="add-friend mb-3 d-flex justify-content-center gap-2"> 
           <input
             type="text"
             className="form-control w-auto"
@@ -104,9 +124,10 @@ export function Progress() {
         </div>
 
         <div className="dropdown-row d-flex justify-content-center my-3">
+          {/* Friends Dropdown: Uses the dynamic 'friends' state */}
           <div className="dropdown me-3">
             <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-              Friends
+              {selectedFriend || 'Friend'}
             </button>
             <ul className="dropdown-menu">
               {friends.map((friend, index) => ( 
@@ -119,13 +140,14 @@ export function Progress() {
             </ul>
           </div>
 
+          {/* Exercises Dropdown: Uses the dynamic 'dynamicExerciseList' */}
           <div className="dropdown">
             <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-              Exercises
+              {selectedExercise || 'Exercise'}
             </button>
             <ul className="dropdown-menu">
-              {exercises.map((exercise, index) => ( 
-                <li key={index}>
+              {dynamicExerciseList.map((exercise) => ( 
+                <li key={exercise}>
                   <button className="dropdown-item" onClick={() => setSelectedExercise(exercise)}>
                     {exercise}
                   </button>
@@ -165,36 +187,38 @@ export function Progress() {
 
       <h4>
         {selectedFriend && selectedExercise
-          ? `${selectedFriend} - ${selectedExercise}`
-          : "Select a user and an exercise"}
+          ? `${selectedFriend}'s Progress on ${selectedExercise}`
+          : "Select a friend and an exercise"}
       </h4>
 
 
-      {/* This graph needs a lot more work, such as functionality to change the date range and such, will add when getting real dynamic data */}
       <div className="graph mb-3" style={{ width: '100%', height: 300 }}>
-        {chartData.length > 0 ? (
-          <div className="graph mb-3" style={{ width: '100%', height: 300 }}>
+        {selectedExercise && chartData.length > 0 ? (
+          <div style={{ width: '100%', height: '100%' }}>
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+              <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date">
-                  <Label value="Day" offset={-5} position="insideBottom" />
+                  <Label value="Date" offset={-5} position="insideBottom" />
                 </XAxis>
                 <YAxis>
-                  <Label value="Weight (lbs)" angle={-90} position="insideLeft" />
+                  <Label value="Result Value" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }}/>
                 </YAxis>
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="weight" stroke="#6d0fb0" strokeWidth={2} />
+                <Line type="monotone" dataKey="weight" stroke="#6d0fb0" strokeWidth={2} name="Result" />
               </LineChart>
             </ResponsiveContainer>
           </div>
           ) : (
-            <p>No progress data yet — report some results in your Workouts page!</p>
+            <p>
+              {selectedExercise 
+                ? `No progress data found for ${selectedExercise}.`
+                : "Select an exercise to view progress."
+              }
+            </p>
           )}
-
       </div>
-
     </main>
   );
 }
