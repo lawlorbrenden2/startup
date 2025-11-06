@@ -77,7 +77,9 @@ const verifyAuth = async (req, res, next) => {
 // GetWorkouts
 apiRouter.get('/workouts', verifyAuth, async (req, res) => {
   const user = await findUser('token', req.cookies[authCookieName]);
+  if (!user) return res.status(401).send({ msg: 'Unauthorized' });
   const userWorkouts = workouts.filter(w => w.userEmail === user.email);
+  
   res.send(userWorkouts);
 });
 
@@ -96,9 +98,8 @@ apiRouter.post('/workouts', verifyAuth, async (req, res) => {
   res.send(workout);
 });
 
-apiRouter.post('/score', verifyAuth, (req, res) => {
-  scores = updateScores(req.body);
-  res.send(scores);
+apiRouter.get('/friends', verifyAuth, (_req, res) => {
+  res.send(friends); // could filter by user later
 });
 
 // Default error handler
