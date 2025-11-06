@@ -124,7 +124,7 @@ export function Workouts() {
 
   const reportExercise = (exerciseName) => {
     if (!selectedDay) return;
-    const resultValue = prompt(`Enter result (e.g., weight, reps) for ${exerciseName} on ${selectedDay}:`);
+    const resultValue = prompt(`Enter weight result for ${exerciseName} on ${selectedDay}:`);
     if (!resultValue) return;
 
     const parsedValue = parseFloat(resultValue);
