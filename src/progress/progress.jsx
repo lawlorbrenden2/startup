@@ -10,6 +10,7 @@ export function Progress() {
   const emojiOptions = ['🔥', '💪', '❄️', '❤️', '🎯', '🏋️'];
   const [sentReactions, setSentReactions] = React.useState([]);
   const [newFriend, setNewFriend] = React.useState('');
+  const [workouts, setWorkouts] = React.useState([]);
 
   const addFriend = (friend) => {
     if (!friend) return;
@@ -18,15 +19,48 @@ export function Progress() {
   }
 
 
-  const chartData = [
-    { date: 'M', weight: Math.floor(Math.random() * 50 + 40) },
-    { date: 'Tu', weight: Math.floor(Math.random() * 50 + 41) },
-    { date: 'W', weight: Math.floor(Math.random() * 50 + 42) },
-    { date: 'Th', weight: Math.floor(Math.random() * 50 + 43) },
-    { date: 'F', weight: Math.floor(Math.random() * 50 + 44) },
-    { date: 'Sat', weight: Math.floor(Math.random() * 50 + 45) },
-    { date: 'Sun', weight: Math.floor(Math.random() * 50 + 46) },
-  ];
+  // const chartData = [
+  //   { date: 'M', weight: Math.floor(Math.random() * 50 + 40) },
+  //   { date: 'Tu', weight: Math.floor(Math.random() * 50 + 41) },
+  //   { date: 'W', weight: Math.floor(Math.random() * 50 + 42) },
+  //   { date: 'Th', weight: Math.floor(Math.random() * 50 + 43) },
+  //   { date: 'F', weight: Math.floor(Math.random() * 50 + 44) },
+  //   { date: 'Sat', weight: Math.floor(Math.random() * 50 + 45) },
+  //   { date: 'Sun', weight: Math.floor(Math.random() * 50 + 46) },
+  // ];
+
+  React.useEffect(() => {
+    const storedData = localStorage.getItem('workouts');
+    if (storedData) {
+      const parsed = JSON.parse(storedData);
+      setWorkouts(parsed);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    const handleStorageChange = () => {
+      const stored = localStorage.getItem('workouts');
+      if (stored) setWorkouts(JSON.parse(stored));
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+
+  const chartData = React.useMemo(() => {
+    if (!selectedExercise || workouts.length === 0) return [];
+
+    return workouts.map(w => {
+      const exercise = w.exercises.find(e => e.startsWith(selectedExercise) && e.includes("Result:"));
+      if (!exercise) return null;
+
+      const resultMatch = exercise.match(/Result:\s*(\d+)/);
+      return resultMatch
+        ? { date: w.day, weight: parseInt(resultMatch[1]) }
+        : null;
+    }).filter(Boolean);
+  }, [selectedExercise, workouts]);
+
 
   const sendReaction = (emoji) => {
     if (!selectedFriend || !selectedExercise) return;
@@ -132,20 +166,27 @@ export function Progress() {
 
       {/* This graph needs a lot more work, such as functionality to change the date range and such, will add when getting real dynamic data */}
       <div className="graph mb-3" style={{ width: '100%', height: 300 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date">
-              <Label value="Day" offset={-5} position="insideBottom" />
-            </XAxis>
-            <YAxis>
-              <Label value="Weight (lbs)" angle={-90} position="insideLeft" />
-            </YAxis>
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="weight" stroke="#6d0fb0" strokeWidth={2} />
-          </LineChart>
-        </ResponsiveContainer>
+        {chartData.length > 0 ? (
+          <div className="graph mb-3" style={{ width: '100%', height: 300 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date">
+                  <Label value="Day" offset={-5} position="insideBottom" />
+                </XAxis>
+                <YAxis>
+                  <Label value="Weight (lbs)" angle={-90} position="insideLeft" />
+                </YAxis>
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="weight" stroke="#6d0fb0" strokeWidth={2} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          ) : (
+            <p>No progress data yet — report some results in your Workouts page!</p>
+          )}
+
       </div>
 
     </main>
