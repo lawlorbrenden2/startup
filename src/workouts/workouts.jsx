@@ -5,13 +5,31 @@ export function Workouts() {
   const [selectedDay, setSelectedDay] = React.useState(null);
   const [newExercise, setNewExercise] = React.useState('');
 
+  const DEFAULT_WORKOUTS = [
+    { day: 'Monday', type: 'Push', exercises: [] },
+    { day: 'Tuesday', type: 'Pull', exercises: [] },
+    { day: 'Wednesday', type: 'Legs', exercises: [] },
+    { day: 'Thursday', type: 'Push', exercises: [] },
+    { day: 'Friday', type: 'Pull', exercises: [] },
+    { day: 'Saturday', type: 'Legs', exercises: [] },
+    { day: 'Sunday', type: 'Rest', exercises: [] },
+  ];
+
   const findWorkout = (day) => workouts.find(w => w.day === day);
   const selectDay = (day) => setSelectedDay(day);
 
+  // Fetch workouts from backend, initializing if the result is empty.
   React.useEffect(() => {
     fetch('/api/workouts', { credentials: 'include' })
       .then(res => res.ok ? res.json() : [])
-      .then(data => setWorkouts(data));
+      .then(data => {
+        // If the backend returns an empty array, initialize with default days
+        if (data.length === 0) {
+            setWorkouts(DEFAULT_WORKOUTS);
+        } else {
+            setWorkouts(data);
+        }
+      });
   }, []);
 
   const addExercise = (exerciseName) => {
@@ -127,38 +145,7 @@ export function Workouts() {
       });
   };
 
-  const addNewWorkout = (newDayName) => {
-    if (!newDayName) return;
-
-    const today = new Date().toISOString().split('T')[0];
-
-    const workoutPayload = {
-      day: newDayName, 
-      date: today,
-      exercises: [],
-      notes: '',
-      type: newDayName,
-    };
-
-    fetch('/api/workouts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(workoutPayload)
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.msg || response.statusText || 'Failed to add new workout day.');
-        }
-        return response.json();
-      })
-      .then(savedWorkout => {
-        setWorkouts(prev => [...prev.filter(w => w.day !== newDayName), savedWorkout]);
-        setSelectedDay(savedWorkout.day);
-      });
-  };
-
+  // REMOVED: addNewWorkout function
 
   const selectedWorkout = findWorkout(selectedDay);
 
@@ -189,18 +176,6 @@ export function Workouts() {
           </tbody>
         </table>
         
-        <button
-          className="btn btn-success mb-4"
-          onClick={() => {
-            const workoutName = prompt("Enter a name for the new workout day (e.g., Monday, Push):");
-            if (workoutName) {
-              addNewWorkout(workoutName);
-            }
-          }}
-        >
-          + Add New Workout Day
-        </button>
-
 
         {selectedWorkout ? (
           <div className="mt-4">
@@ -260,7 +235,7 @@ export function Workouts() {
             </div>
           </div>
         ) : (
-          <p>Click a day to view exercises for that day, or add a new workout day.</p>
+          <p>Click a day to view exercises for that day.</p>
         )}
       </div>
     </main>
