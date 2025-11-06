@@ -6,162 +6,141 @@ const app = express();
 
 const authCookieName = 'token';
 
-// These are saved in memory and disappear whenever the service is restarted.
+// In-memory storage
 let users = [];
 let workouts = [];
-let exercises = [];
-let friends = [];
 
-// The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
-// JSON body parsing using built-in middleware
 app.use(express.json());
-
-// Use the cookie parser middleware for tracking authentication tokens
 app.use(cookieParser());
-
-// Serve up the front-end static content hosting
 app.use(express.static('public'));
 
-// Router for service endpoints
-var apiRouter = express.Router();
-app.use(`/api`, apiRouter);
 
-// CreateAuth a new user
+const apiRouter = express.Router();
+app.use('/api', apiRouter);
+
+
+// Create user
 apiRouter.post('/auth/create', async (req, res) => {
   if (await findUser('email', req.body.email)) {
-    res.status(409).send({ msg: 'Existing user' });
-  } else {
-    const user = await createUser(req.body.email, req.body.password);
-
-    setAuthCookie(res, user.token);
-    res.send({ email: user.email });
+    return res.status(409).send({ msg: 'Existing user' });
   }
+  const user = await createUser(req.body.email, req.body.password);
+  setAuthCookie(res, user.token);
+  res.send({ email: user.email });
 });
 
-// GetAuth login an existing user
+// Login
 apiRouter.post('/auth/login', async (req, res) => {
   const user = await findUser('email', req.body.email);
-  if (user) {
-    if (await bcrypt.compare(req.body.password, user.password)) {
-      user.token = uuid.v4();
-      setAuthCookie(res, user.token);
-      res.send({ email: user.email });
-      return;
-    }
+  if (user && await bcrypt.compare(req.body.password, user.password)) {
+    user.token = uuid.v4();
+    setAuthCookie(res, user.token);
+    return res.send({ email: user.email });
   }
   res.status(401).send({ msg: 'Unauthorized' });
 });
 
-// DeleteAuth logout a user
+// Logout
 apiRouter.delete('/auth/logout', async (req, res) => {
   const user = await findUser('token', req.cookies[authCookieName]);
-  if (user) {
-    delete user.token;
-  }
+  if (user) delete user.token;
   res.clearCookie(authCookieName);
   res.status(204).end();
 });
 
-// Middleware to verify that the user is authorized to call an endpoint
+// Middleware to verify authentication
 const verifyAuth = async (req, res, next) => {
   const user = await findUser('token', req.cookies[authCookieName]);
-  if (user) {
-    next();
-  } else {
-    res.status(401).send({ msg: 'Unauthorized' });
-  }
+  if (!user) return res.status(401).send({ msg: 'Unauthorized' });
+  req.user = user; // attach for convenience
+  next();
 };
 
-// GetWorkouts
-apiRouter.get('/workouts', verifyAuth, async (req, res) => {
-  const user = await findUser('token', req.cookies[authCookieName]);
-  if (!user) return res.status(401).send({ msg: 'Unauthorized' });
-  const userWorkouts = workouts.filter(w => w.userEmail === user.email);
-  
+
+// Get all workouts for logged-in user
+apiRouter.get('/workouts', verifyAuth, (req, res) => {
+  const userWorkouts = workouts.filter(w => w.userEmail === req.user.email);
   res.send(userWorkouts);
 });
 
 // Add a new workout
-apiRouter.post('/workouts', verifyAuth, async (req, res) => {
-  const user = await findUser('token', req.cookies[authCookieName]);
+apiRouter.post('/workouts', verifyAuth, (req, res) => {
   const workout = {
     id: uuid.v4(),
-    userEmail: user.email,
+    userEmail: req.user.email,
     name: req.body.name,
     date: req.body.date,
-    exercises: req.body.exercises,
-    notes: req.body.notes
+    exercises: [],
+    notes: req.body.notes || ''
   };
   workouts.push(workout);
   res.send(workout);
 });
 
-apiRouter.get('/friends', verifyAuth, (_req, res) => {
-  res.send(friends); // could filter by user later
+// Add an exercise to a workout
+apiRouter.post('/workouts/:workoutId/exercises', verifyAuth, (req, res) => {
+  const workout = workouts.find(w => w.id === req.params.workoutId && w.userEmail === req.user.email);
+  if (!workout) return res.status(404).send({ msg: 'Workout not found' });
+
+  const exercise = {
+    id: uuid.v4(),
+    name: req.body.name,
+    notes: req.body.notes || '',
+    results: []
+  };
+  workout.exercises.push(exercise);
+  res.send(exercise);
 });
 
-// Default error handler
-app.use(function (err, req, res, next) {
-  res.status(500).send({ type: err.name, message: err.message });
+// Report a result for an exercise
+apiRouter.post('/workouts/:workoutId/exercises/:exerciseId/results', verifyAuth, (req, res) => {
+  const workout = workouts.find(w => w.id === req.params.workoutId && w.userEmail === req.user.email);
+  if (!workout) return res.status(404).send({ msg: 'Workout not found' });
+
+  const exercise = workout.exercises.find(e => e.id === req.params.exerciseId);
+  if (!exercise) return res.status(404).send({ msg: 'Exercise not found' });
+
+  const result = {
+    value: req.body.value,
+    date: req.body.date || new Date().toISOString().split('T')[0]
+  };
+  exercise.results.push(result);
+  res.send(exercise);
 });
 
-// Return the application's default page if the path is unknown
-app.use((_req, res) => {
-  res.sendFile('index.html', { root: 'public' });
-});
-
-// updateScores considers a new score for inclusion in the high scores.
-function updateScores(newScore) {
-  let found = false;
-  for (const [i, prevScore] of scores.entries()) {
-    if (newScore.score > prevScore.score) {
-      scores.splice(i, 0, newScore);
-      found = true;
-      break;
-    }
-  }
-
-  if (!found) {
-    scores.push(newScore);
-  }
-
-  if (scores.length > 10) {
-    scores.length = 10;
-  }
-
-  return scores;
-}
 
 async function createUser(email, password) {
   const passwordHash = await bcrypt.hash(password, 10);
-
-  const user = {
-    email: email,
-    password: passwordHash,
-    token: uuid.v4(),
-  };
+  const user = { email, password: passwordHash, token: uuid.v4() };
   users.push(user);
-
   return user;
 }
 
 async function findUser(field, value) {
   if (!value) return null;
-
-  return users.find((u) => u[field] === value);
+  return users.find(u => u[field] === value);
 }
 
-// setAuthCookie in the HTTP response
-function setAuthCookie(res, authToken) {
-  res.cookie(authCookieName, authToken, {
+function setAuthCookie(res, token) {
+  res.cookie(authCookieName, token, {
     maxAge: 1000 * 60 * 60 * 24 * 365,
-    secure: true,
+    secure: false,
     httpOnly: true,
-    sameSite: 'strict',
+    sameSite: 'strict'
   });
 }
+
+app.use((err, req, res, next) => {
+  res.status(500).send({ type: err.name, message: err.message });
+});
+
+
+app.use((_req, res) => {
+  res.sendFile('index.html', { root: 'public' });
+});
+
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
