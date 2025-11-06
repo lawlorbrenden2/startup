@@ -33,11 +33,13 @@ async function findUser(field, value) {
   return users.find(u => u[field] === value);
 }
 
-function setAuthCookie(res, token) {
-  res.cookie(authCookieName, token, {
+// setAuthCookie in the HTTP response
+function setAuthCookie(res, authToken) {
+  res.cookie(authCookieName, authToken, {
     maxAge: 1000 * 60 * 60 * 24 * 365,
-    secure: false,
+    secure: true,
     httpOnly: true,
+    sameSite: 'strict',
   });
 }
 

@@ -18,15 +18,21 @@ export function Workouts() {
   const findWorkout = (day) => workouts.find(w => w.day === day);
   const selectDay = (day) => setSelectedDay(day);
 
+
   React.useEffect(() => {
     fetch('/api/workouts', { credentials: 'include' })
       .then(res => res.ok ? res.json() : [])
-      .then(data => {
-        if (data.length === 0) {
-            setWorkouts(DEFAULT_WORKOUTS);
-        } else {
-            setWorkouts(data);
-        }
+      .then(savedWorkouts => {
+        const savedMap = savedWorkouts.reduce((acc, w) => {
+          acc[w.day] = w;
+          return acc;
+        }, {});
+
+        const mergedWorkouts = DEFAULT_WORKOUTS.map(defaultW => {
+          return savedMap[defaultW.day] || defaultW;
+        });
+
+        setWorkouts(mergedWorkouts);
       });
   }, []);
 
