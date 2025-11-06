@@ -77,23 +77,25 @@ const verifyAuth = async (req, res, next) => {
 // GetWorkouts
 apiRouter.get('/workouts', verifyAuth, async (req, res) => {
   const user = await findUser('token', req.cookies[authCookieName]);
-  if (!user) return res.status(401).send({ msg: 'Unauthorized' });
+  const userWorkouts = workouts.filter(w => w.userEmail === user.email);
+  res.send(userWorkouts);
+});
 
-  // Filter workouts belonging to this user
+// Add a new workout
+apiRouter.post('/workouts', verifyAuth, async (req, res) => {
+  const user = await findUser('token', req.cookies[authCookieName]);
   const workout = {
     id: uuid.v4(),
     userEmail: user.email,
     name: req.body.name,
-    exercises: req.body.exercises,
     date: req.body.date,
-    notes: req.body.notes,
-  }
-
+    exercises: req.body.exercises,
+    notes: req.body.notes
+  };
   workouts.push(workout);
   res.send(workout);
 });
 
-// Add a new workout
 apiRouter.post('/score', verifyAuth, (req, res) => {
   scores = updateScores(req.body);
   res.send(scores);
