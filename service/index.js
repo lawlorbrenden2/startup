@@ -74,12 +74,26 @@ const verifyAuth = async (req, res, next) => {
   }
 };
 
-// GetScores
-apiRouter.get('/scores', verifyAuth, (_req, res) => {
-  res.send(scores);
+// GetWorkouts
+apiRouter.get('/workouts', verifyAuth, async (req, res) => {
+  const user = await findUser('token', req.cookies[authCookieName]);
+  if (!user) return res.status(401).send({ msg: 'Unauthorized' });
+
+  // Filter workouts belonging to this user
+  const workout = {
+    id: uuid.v4(),
+    userEmail: user.email,
+    name: req.body.name,
+    exercises: req.body.exercises,
+    date: req.body.date,
+    notes: req.body.notes,
+  }
+
+  workouts.push(workout);
+  res.send(workout);
 });
 
-// SubmitScore
+// Add a new workout
 apiRouter.post('/score', verifyAuth, (req, res) => {
   scores = updateScores(req.body);
   res.send(scores);
