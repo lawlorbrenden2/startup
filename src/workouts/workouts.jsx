@@ -5,45 +5,43 @@ export function Workouts() {
   const [selectedDay, setSelectedDay] = React.useState(null);
   const [newExercise, setNewExercise] = React.useState('');
 
-  // Fetch workouts from backend on load
+  const findWorkout = (day) => workouts.find(w => w.day === day);
+  const selectDay = (day) => setSelectedDay(day);
+
   React.useEffect(() => {
     fetch('/api/workouts', { credentials: 'include' })
       .then(res => res.ok ? res.json() : [])
       .then(data => setWorkouts(data));
   }, []);
 
-  const selectDay = (day) => setSelectedDay(day);
+  const addExercise = (exerciseName) => {
+    if (!exerciseName || !selectedDay) return;
 
-  const addExercise = (exercise) => {
-    if (!exercise || !selectedDay) return;
-
-    const currentWorkout = workouts.find(w => w.day === selectedDay);
-    if (currentWorkout && currentWorkout.exercises.some(e => e.name.toLowerCase() === exercise.toLowerCase())) {
-      alert(`${exercise} is already in the list for ${selectedDay}.`);
+    const currentWorkout = findWorkout(selectedDay);
+    if (currentWorkout && currentWorkout.exercises.some(e => e.name.toLowerCase() === exerciseName.toLowerCase())) {
+      alert(`${exerciseName} is already in the list for ${selectedDay}.`);
       return;
     }
 
-    const today = new Date().toISOString().split('T')[0];
-
-    const workoutPayload = {
-      day: selectedDay,
-      date: today,
-      exercises: [{ name: exercise, results: [] }],
-      notes: ''
-    };
-
-    fetch('/api/workouts', {
+    fetch(`/api/workouts/${selectedDay}/exercises`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify(workoutPayload)
+      body: JSON.stringify({ name: exerciseName })
     })
-      .then(res => res.json())
-      .then(savedWorkout => {
-        setWorkouts(prev => [
-          ...prev.filter(w => w.day !== selectedDay),
-          savedWorkout
-        ]);
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.msg || response.statusText || 'Failed to add exercise.');
+        }
+        return response.json();
+      })
+      .then(updatedWorkout => {
+        setWorkouts(prev =>
+          prev.map(w =>
+            w.day === selectedDay ? updatedWorkout : w
+          )
+        );
         setNewExercise('');
       });
   };
@@ -54,15 +52,21 @@ export function Workouts() {
     fetch(`/api/workouts/${selectedDay}/exercises/${exerciseName}`, {
       method: 'DELETE',
       credentials: 'include'
-    }).then(() => {
-      setWorkouts(prev =>
-        prev.map(w =>
-          w.day === selectedDay
-            ? { ...w, exercises: w.exercises.filter(e => e.name !== exerciseName) }
-            : w
-        )
-      );
-    });
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.msg || response.statusText || 'Failed to remove exercise.');
+        }
+        return response.json();
+      })
+      .then(updatedWorkout => {
+        setWorkouts(prev =>
+          prev.map(w =>
+            w.day === selectedDay ? updatedWorkout : w
+          )
+        );
+      });
   };
 
   const reportExercise = (exerciseName) => {
@@ -77,7 +81,6 @@ export function Workouts() {
     }
 
     const today = new Date().toISOString().split('T')[0];
-
     const resultPayload = { value: parsedValue, date: today };
 
     fetch(`/api/workouts/${selectedDay}/exercises/${exerciseName}/results`, {
@@ -86,7 +89,13 @@ export function Workouts() {
       credentials: 'include',
       body: JSON.stringify(resultPayload)
     })
-      .then(res => res.json())
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.msg || response.statusText || 'Failed to report result.');
+        }
+        return response.json();
+      })
       .then(updatedWorkout => {
         setWorkouts(prev =>
           prev.map(w =>
@@ -103,22 +112,61 @@ export function Workouts() {
       credentials: 'include',
       body: JSON.stringify({ type: newType })
     })
-      .then(res => res.json())
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.msg || response.statusText || 'Failed to update workout type.');
+        }
+        return response.json();
+      })
       .then(updatedWorkout => {
         setWorkouts(prev =>
           prev.map(w => w.day === day ? updatedWorkout : w)
         );
+        setSelectedDay(updatedWorkout.day); 
       });
   };
 
-  const selectedWorkout = workouts.find(w => w.day === selectedDay);
+  const addNewWorkout = (newDayName) => {
+    if (!newDayName) return;
+
+    const today = new Date().toISOString().split('T')[0];
+
+    const workoutPayload = {
+      day: newDayName, 
+      date: today,
+      exercises: [],
+      notes: '',
+      type: newDayName,
+    };
+
+    fetch('/api/workouts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(workoutPayload)
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.msg || response.statusText || 'Failed to add new workout day.');
+        }
+        return response.json();
+      })
+      .then(savedWorkout => {
+        setWorkouts(prev => [...prev.filter(w => w.day !== newDayName), savedWorkout]);
+        setSelectedDay(savedWorkout.day);
+      });
+  };
+
+
+  const selectedWorkout = findWorkout(selectedDay);
 
   return (
     <main className="container-fluid bg-dark text-light d-flex flex-column align-items-center mt-5 pt-3">
       <div className="content-wrapper w-75">
         <h2>My Workout Plan</h2>
 
-        {/* Day selector table */}
         <table className="table table-dark table-hover mt-3">
           <thead>
             <tr>
@@ -140,12 +188,24 @@ export function Workouts() {
             ))}
           </tbody>
         </table>
+        
+        <button
+          className="btn btn-success mb-4"
+          onClick={() => {
+            const workoutName = prompt("Enter a name for the new workout day (e.g., Monday, Push):");
+            if (workoutName) {
+              addNewWorkout(workoutName);
+            }
+          }}
+        >
+          + Add New Workout Day
+        </button>
+
 
         {selectedWorkout ? (
           <div className="mt-4">
             <h3>{selectedDay} Exercises</h3>
 
-            {/* Workout type dropdown */}
             <div className="mb-3 text-center">
               <label className="d-block mb-2">Workout Type:</label>
               <div className="dropdown d-inline-block">
@@ -171,10 +231,9 @@ export function Workouts() {
               </div>
             </div>
 
-            {/* Exercises list */}
             <ul className="list-unstyled">
-              {selectedWorkout.exercises.map((ex, idx) => (
-                <li key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 border-bottom">
+              {selectedWorkout.exercises.map((ex) => (
+                <li key={ex.name} className="d-flex justify-content-between align-items-center mb-2 p-2 border-bottom">
                   {ex.name} ({ex.results.length} results)
                   <div>
                     <button className="btn btn-sm btn-danger me-1" onClick={() => removeExercise(ex.name)}>−</button>
@@ -184,7 +243,6 @@ export function Workouts() {
               ))}
             </ul>
 
-            {/* Add new exercise */}
             <div className="mt-4 d-flex gap-2 align-items-center justify-content-center">
               <input
                 type="text"
@@ -202,7 +260,7 @@ export function Workouts() {
             </div>
           </div>
         ) : (
-          <p>Click a day to view exercises for that day.</p>
+          <p>Click a day to view exercises for that day, or add a new workout day.</p>
         )}
       </div>
     </main>

@@ -6,7 +6,6 @@ const app = express();
 
 const authCookieName = 'token';
 
-// In-memory storage
 let users = [];
 let workouts = [];
 
@@ -16,12 +15,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.static('public'));
 
-
 const apiRouter = express.Router();
 app.use('/api', apiRouter);
 
 
-// Create user
 apiRouter.post('/auth/create', async (req, res) => {
   if (await findUser('email', req.body.email)) {
     return res.status(409).send({ msg: 'Existing user' });
@@ -31,7 +28,6 @@ apiRouter.post('/auth/create', async (req, res) => {
   res.send({ email: user.email });
 });
 
-// Login
 apiRouter.post('/auth/login', async (req, res) => {
   const user = await findUser('email', req.body.email);
   if (user && await bcrypt.compare(req.body.password, user.password)) {
@@ -42,7 +38,6 @@ apiRouter.post('/auth/login', async (req, res) => {
   res.status(401).send({ msg: 'Unauthorized' });
 });
 
-// Logout
 apiRouter.delete('/auth/logout', async (req, res) => {
   const user = await findUser('token', req.cookies[authCookieName]);
   if (user) delete user.token;
@@ -50,7 +45,6 @@ apiRouter.delete('/auth/logout', async (req, res) => {
   res.status(204).end();
 });
 
-// Middleware to verify authentication
 const verifyAuth = async (req, res, next) => {
   const user = await findUser('token', req.cookies[authCookieName]);
   if (!user) return res.status(401).send({ msg: 'Unauthorized' });
@@ -58,48 +52,86 @@ const verifyAuth = async (req, res, next) => {
   next();
 };
 
-
-// Get all workouts for logged-in user
 apiRouter.get('/workouts', verifyAuth, (req, res) => {
   const userWorkouts = workouts.filter(w => w.userEmail === req.user.email);
   res.send(userWorkouts);
 });
 
-// Add a new workout
 apiRouter.post('/workouts', verifyAuth, (req, res) => {
-  const workout = {
-    id: uuid.v4(),
-    userEmail: req.user.email,
-    name: req.body.name,
-    date: req.body.date,
-    exercises: [],
-    notes: req.body.notes || ''
-  };
-  workouts.push(workout);
+  const incomingWorkoutData = req.body;
+  const userEmail = req.user.email;
+  const workoutName = incomingWorkoutData.day; 
+  
+  let workout = workouts.find(w => w.userEmail === userEmail && w.name === workoutName);
+
+  if (workout) {
+    workout.date = incomingWorkoutData.date || workout.date;
+    workout.type = incomingWorkoutData.type || workout.type;
+    workout.notes = incomingWorkoutData.notes || workout.notes;
+  } else {
+    workout = {
+      id: uuid.v4(),
+      userEmail: userEmail,
+      day: workoutName, 
+      name: workoutName,
+      date: incomingWorkoutData.date,
+      type: incomingWorkoutData.type || workoutName,
+      exercises: incomingWorkoutData.exercises || [],
+      notes: incomingWorkoutData.notes || ''
+    };
+    workouts.push(workout);
+  }
+  
   res.send(workout);
 });
 
-// Add an exercise to a workout
-apiRouter.post('/workouts/:workoutId/exercises', verifyAuth, (req, res) => {
-  const workout = workouts.find(w => w.id === req.params.workoutId && w.userEmail === req.user.email);
+
+apiRouter.post('/workouts/:day/exercises', verifyAuth, (req, res) => {
+  const workoutName = req.params.day;
+  const newExerciseName = req.body.name;
+  
+  const workout = workouts.find(w => w.name === workoutName && w.userEmail === req.user.email);
   if (!workout) return res.status(404).send({ msg: 'Workout not found' });
+  if (workout.exercises.some(e => e.name.toLowerCase() === newExerciseName.toLowerCase())) {
+     return res.status(409).send({ msg: 'Exercise already exists in this workout' });
+  }
 
   const exercise = {
     id: uuid.v4(),
-    name: req.body.name,
+    name: newExerciseName,
     notes: req.body.notes || '',
     results: []
   };
   workout.exercises.push(exercise);
-  res.send(exercise);
+  
+  
+  res.send(workout); 
 });
 
-// Report a result for an exercise
-apiRouter.post('/workouts/:workoutId/exercises/:exerciseId/results', verifyAuth, (req, res) => {
-  const workout = workouts.find(w => w.id === req.params.workoutId && w.userEmail === req.user.email);
+apiRouter.delete('/workouts/:day/exercises/:exerciseName', verifyAuth, (req, res) => {
+  const workoutName = req.params.day;
+  const exerciseName = req.params.exerciseName;
+
+  const workout = workouts.find(w => w.name === workoutName && w.userEmail === req.user.email);
   if (!workout) return res.status(404).send({ msg: 'Workout not found' });
 
-  const exercise = workout.exercises.find(e => e.id === req.params.exerciseId);
+  const initialLength = workout.exercises.length;
+  workout.exercises = workout.exercises.filter(e => e.name.toLowerCase() !== exerciseName.toLowerCase());
+
+  if (workout.exercises.length === initialLength) return res.status(404).send({ msg: 'Exercise not found' });
+
+  // Return the updated workout object
+  res.send(workout);
+});
+
+apiRouter.post('/workouts/:day/exercises/:exerciseName/results', verifyAuth, (req, res) => {
+  const workoutName = req.params.day;
+  const exerciseName = req.params.exerciseName;
+
+  const workout = workouts.find(w => w.name === workoutName && w.userEmail === req.user.email);
+  if (!workout) return res.status(404).send({ msg: 'Workout not found' });
+
+  const exercise = workout.exercises.find(e => e.name.toLowerCase() === exerciseName.toLowerCase());
   if (!exercise) return res.status(404).send({ msg: 'Exercise not found' });
 
   const result = {
@@ -107,8 +139,24 @@ apiRouter.post('/workouts/:workoutId/exercises/:exerciseId/results', verifyAuth,
     date: req.body.date || new Date().toISOString().split('T')[0]
   };
   exercise.results.push(result);
-  res.send(exercise);
+  
+  res.send(workout);
 });
+
+apiRouter.put('/workouts/:day/type', verifyAuth, (req, res) => {
+  const oldWorkoutName = req.params.day;
+  const newType = req.body.type;
+
+  const workout = workouts.find(w => w.name === oldWorkoutName && w.userEmail === req.user.email);
+  if (!workout) return res.status(404).send({ msg: 'Workout not found' });
+
+  workout.name = newType; 
+  workout.type = newType;
+
+
+  res.send(workout);
+});
+
 
 
 async function createUser(email, password) {
@@ -131,6 +179,7 @@ function setAuthCookie(res, token) {
     sameSite: 'strict'
   });
 }
+
 
 app.use((err, req, res, next) => {
   res.status(500).send({ type: err.name, message: err.message });
