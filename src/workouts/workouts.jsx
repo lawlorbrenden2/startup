@@ -5,47 +5,64 @@ export function Workouts() {
   const [selectedDay, setSelectedDay] = React.useState(null);
   const [newExercise, setNewExercise] = React.useState('');
 
+  // Fetch workouts from backend on load
   React.useEffect(() => {
     fetch('/api/workouts', { credentials: 'include' })
       .then(res => res.ok ? res.json() : [])
       .then(data => setWorkouts(data));
   }, []);
 
-  // Save workouts to localStorage whenever they change
-  React.useEffect(() => {
-    localStorage.setItem('workouts', JSON.stringify(workouts));
-  }, [workouts]);
-
   const selectDay = (day) => setSelectedDay(day);
 
   const addExercise = (exercise) => {
     if (!exercise || !selectedDay) return;
-    
+
     const currentWorkout = workouts.find(w => w.day === selectedDay);
     if (currentWorkout && currentWorkout.exercises.some(e => e.name.toLowerCase() === exercise.toLowerCase())) {
-        alert(`${exercise} is already in the list for ${selectedDay}.`);
-        return;
+      alert(`${exercise} is already in the list for ${selectedDay}.`);
+      return;
     }
 
-    setWorkouts(prev =>
-      prev.map(w =>
-        w.day === selectedDay
-          ? { ...w, exercises: [...w.exercises, { name: exercise, results: [] }] }
-          : w
-      )
-    );
-    setNewExercise('');
+    const today = new Date().toISOString().split('T')[0];
+
+    const workoutPayload = {
+      day: selectedDay,
+      date: today,
+      exercises: [{ name: exercise, results: [] }],
+      notes: ''
+    };
+
+    fetch('/api/workouts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(workoutPayload)
+    })
+      .then(res => res.json())
+      .then(savedWorkout => {
+        setWorkouts(prev => [
+          ...prev.filter(w => w.day !== selectedDay),
+          savedWorkout
+        ]);
+        setNewExercise('');
+      });
   };
 
   const removeExercise = (exerciseName) => {
     if (!selectedDay) return;
-    setWorkouts(prev =>
-      prev.map(w =>
-        w.day === selectedDay
-          ? { ...w, exercises: w.exercises.filter(e => e.name !== exerciseName) }
-          : w
-      )
-    );
+
+    fetch(`/api/workouts/${selectedDay}/exercises/${exerciseName}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    }).then(() => {
+      setWorkouts(prev =>
+        prev.map(w =>
+          w.day === selectedDay
+            ? { ...w, exercises: w.exercises.filter(e => e.name !== exerciseName) }
+            : w
+        )
+      );
+    });
   };
 
   const reportExercise = (exerciseName) => {
@@ -53,34 +70,45 @@ export function Workouts() {
     const resultValue = prompt(`Enter result (e.g., weight, reps) for ${exerciseName} on ${selectedDay}:`);
     if (!resultValue) return;
 
-    // Optional improvement: Check if the result is a number before parsing
     const parsedValue = parseFloat(resultValue);
     if (isNaN(parsedValue)) {
       alert("Invalid input. Please enter a numerical value.");
       return;
     }
 
-    const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
-    setWorkouts(prev =>
-      prev.map(w =>
-        w.day === selectedDay
-          ? {
-              ...w,
-              exercises: w.exercises.map(e =>
-                e.name === exerciseName
-                  ? { ...e, results: [...e.results, { value: parsedValue, date: today }] }
-                  : e
-              ),
-            }
-          : w
-      )
-    );
+    const today = new Date().toISOString().split('T')[0];
+
+    const resultPayload = { value: parsedValue, date: today };
+
+    fetch(`/api/workouts/${selectedDay}/exercises/${exerciseName}/results`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(resultPayload)
+    })
+      .then(res => res.json())
+      .then(updatedWorkout => {
+        setWorkouts(prev =>
+          prev.map(w =>
+            w.day === selectedDay ? updatedWorkout : w
+          )
+        );
+      });
   };
 
   const updateWorkoutType = (day, newType) => {
-    setWorkouts(prev =>
-      prev.map(w => (w.day === day ? { ...w, type: newType } : w))
-    );
+    fetch(`/api/workouts/${day}/type`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ type: newType })
+    })
+      .then(res => res.json())
+      .then(updatedWorkout => {
+        setWorkouts(prev =>
+          prev.map(w => w.day === day ? updatedWorkout : w)
+        );
+      });
   };
 
   const selectedWorkout = workouts.find(w => w.day === selectedDay);
