@@ -6,19 +6,9 @@ export function Workouts() {
   const [newExercise, setNewExercise] = React.useState('');
 
   React.useEffect(() => {
-    const stored = localStorage.getItem('workouts');
-
-    if (stored) setWorkouts(JSON.parse(stored));
-    else
-      setWorkouts([
-        { day: 'Monday', type: 'Push', exercises: [] },
-        { day: 'Tuesday', type: 'Pull', exercises: [] },
-        { day: 'Wednesday', type: 'Legs', exercises: [] },
-        { day: 'Thursday', type: 'Push', exercises: [] },
-        { day: 'Friday', type: 'Pull', exercises: [] },
-        { day: 'Saturday', type: 'Legs', exercises: [] },
-        { day: 'Sunday', type: 'Rest', exercises: [] },
-      ]);
+    fetch('/api/workouts', { credentials: 'include' })
+      .then(res => res.ok ? res.json() : [])
+      .then(data => setWorkouts(data));
   }, []);
 
   // Save workouts to localStorage whenever they change
