@@ -18,12 +18,10 @@ export function Workouts() {
   const findWorkout = (day) => workouts.find(w => w.day === day);
   const selectDay = (day) => setSelectedDay(day);
 
-  // Fetch workouts from backend, initializing if the result is empty.
   React.useEffect(() => {
     fetch('/api/workouts', { credentials: 'include' })
       .then(res => res.ok ? res.json() : [])
       .then(data => {
-        // If the backend returns an empty array, initialize with default days
         if (data.length === 0) {
             setWorkouts(DEFAULT_WORKOUTS);
         } else {
@@ -32,7 +30,26 @@ export function Workouts() {
       });
   }, []);
 
+  const saveDefaultWorkout = (day, currentWorkout, typeOverride) => {
+    if (currentWorkout && currentWorkout.id) {
+        return Promise.resolve(currentWorkout);
+    }
+
+    return fetch('/api/workouts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ 
+            day: day, 
+            date: new Date().toISOString().split('T')[0],
+            type: typeOverride || currentWorkout.type || day,
+            exercises: currentWorkout.exercises || [],
+        })
+    }).then(res => res.ok ? res.json() : currentWorkout);
+  };
+
   const addExercise = (exerciseName) => {
+    console.log('Adding exercise:', exerciseName, 'for', selectedDay);
     if (!exerciseName || !selectedDay) return;
 
     const currentWorkout = findWorkout(selectedDay);
@@ -40,13 +57,18 @@ export function Workouts() {
       alert(`${exerciseName} is already in the list for ${selectedDay}.`);
       return;
     }
-
-    fetch(`/api/workouts/${selectedDay}/exercises`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ name: exerciseName })
-    })
+    
+    saveDefaultWorkout(selectedDay, currentWorkout)
+      .then(savedWorkout => {
+        setWorkouts(prev => prev.map(w => w.day === selectedDay ? savedWorkout : w));
+        
+        return fetch(`/api/workouts/${selectedDay}/exercises`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ name: exerciseName })
+        });
+      })
       .then(async (response) => {
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
@@ -60,17 +82,24 @@ export function Workouts() {
             w.day === selectedDay ? updatedWorkout : w
           )
         );
-        setNewExercise('');
+        setNewExercise(''); 
       });
   };
 
   const removeExercise = (exerciseName) => {
     if (!selectedDay) return;
 
-    fetch(`/api/workouts/${selectedDay}/exercises/${exerciseName}`, {
-      method: 'DELETE',
-      credentials: 'include'
-    })
+    const currentWorkout = findWorkout(selectedDay);
+    
+    saveDefaultWorkout(selectedDay, currentWorkout)
+      .then(savedWorkout => {
+        setWorkouts(prev => prev.map(w => w.day === selectedDay ? savedWorkout : w));
+
+        return fetch(`/api/workouts/${selectedDay}/exercises/${exerciseName}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+      })
       .then(async (response) => {
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
@@ -101,12 +130,19 @@ export function Workouts() {
     const today = new Date().toISOString().split('T')[0];
     const resultPayload = { value: parsedValue, date: today };
 
-    fetch(`/api/workouts/${selectedDay}/exercises/${exerciseName}/results`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(resultPayload)
-    })
+    const currentWorkout = findWorkout(selectedDay);
+    
+    saveDefaultWorkout(selectedDay, currentWorkout)
+      .then(savedWorkout => {
+        setWorkouts(prev => prev.map(w => w.day === selectedDay ? savedWorkout : w));
+
+        return fetch(`/api/workouts/${selectedDay}/exercises/${exerciseName}/results`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(resultPayload)
+        });
+      })
       .then(async (response) => {
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
@@ -124,28 +160,36 @@ export function Workouts() {
   };
 
   const updateWorkoutType = (day, newType) => {
-    fetch(`/api/workouts/${day}/type`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ type: newType })
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.msg || response.statusText || 'Failed to update workout type.');
-        }
-        return response.json();
-      })
-      .then(updatedWorkout => {
-        setWorkouts(prev =>
-          prev.map(w => w.day === day ? updatedWorkout : w)
-        );
-        setSelectedDay(updatedWorkout.day); 
-      });
-  };
+    console.log('Updating workout type for', day, 'to', newType);
+    const currentWorkout = findWorkout(day);
 
-  // REMOVED: addNewWorkout function
+    saveDefaultWorkout(day, currentWorkout, newType)
+        .then(savedWorkout => {
+            if (savedWorkout && savedWorkout.id && !currentWorkout.id && savedWorkout.type === newType) {
+                 setWorkouts(prev => prev.map(w => w.day === day ? savedWorkout : w));
+                 setSelectedDay(savedWorkout.day);
+                 return;
+            }
+            
+            return fetch(`/api/workouts/${day}/type`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ type: newType })
+            })
+            .then(async (response) => {
+                if (!response.ok) {
+                  const errorData = await response.json().catch(() => ({}));
+                  throw new Error(errorData.msg || response.statusText || 'Failed to update workout type.');
+                }
+                return response.json();
+            })
+            .then(updatedWorkout => {
+                setWorkouts(prev => prev.map(w => w.day === day ? updatedWorkout : w));
+                setSelectedDay(updatedWorkout.day); 
+            });
+        });
+  };
 
   const selectedWorkout = findWorkout(selectedDay);
 
@@ -176,7 +220,6 @@ export function Workouts() {
           </tbody>
         </table>
         
-
         {selectedWorkout ? (
           <div className="mt-4">
             <h3>{selectedDay} Exercises</h3>

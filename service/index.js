@@ -21,6 +21,42 @@ const apiRouter = express.Router();
 app.use('/api', apiRouter);
 
 
+async function createUser(email, password) {
+  const passwordHash = await bcrypt.hash(password, 10);
+  const user = { email, password: passwordHash, token: uuid.v4() };
+  users.push(user);
+  return user;
+}
+
+async function findUser(field, value) {
+  if (!value) return null;
+  return users.find(u => u[field] === value);
+}
+
+function setAuthCookie(res, token) {
+  res.cookie(authCookieName, token, {
+    maxAge: 1000 * 60 * 60 * 24 * 365,
+    secure: false,
+    httpOnly: true,
+  });
+}
+
+const findUserWorkout = (userEmail, dayIdentifier) => {
+    const lowerIdentifier = dayIdentifier.toLowerCase();
+    return workouts.find(w => w.userEmail === userEmail && w.name.toLowerCase() === lowerIdentifier);
+};
+
+const verifyAuth = async (req, res, next) => {
+  const user = await findUser('token', req.cookies[authCookieName]);
+  
+  if (!user) {
+    return res.status(401).send({ msg: 'Unauthorized' });
+  }
+  
+  req.user = user;
+  next();
+};
+
 apiRouter.post('/auth/create', async (req, res) => {
   if (await findUser('email', req.body.email)) {
     return res.status(409).send({ msg: 'Existing user' });
@@ -47,13 +83,6 @@ apiRouter.delete('/auth/logout', async (req, res) => {
   res.status(204).end();
 });
 
-const verifyAuth = async (req, res, next) => {
-  const user = await findUser('token', req.cookies[authCookieName]);
-  if (!user) return res.status(401).send({ msg: 'Unauthorized' });
-  req.user = user; // attach for convenience
-  next();
-};
-
 apiRouter.get('/workouts', verifyAuth, (req, res) => {
   const userWorkouts = workouts.filter(w => w.userEmail === req.user.email);
   res.send(userWorkouts);
@@ -62,9 +91,9 @@ apiRouter.get('/workouts', verifyAuth, (req, res) => {
 apiRouter.post('/workouts', verifyAuth, (req, res) => {
   const incomingWorkoutData = req.body;
   const userEmail = req.user.email;
-  const workoutName = incomingWorkoutData.day; 
+  const workoutDayIdentifier = incomingWorkoutData.day; 
   
-  let workout = workouts.find(w => w.userEmail === userEmail && w.name === workoutName);
+  let workout = findUserWorkout(userEmail, workoutDayIdentifier);
 
   if (workout) {
     workout.date = incomingWorkoutData.date || workout.date;
@@ -74,10 +103,10 @@ apiRouter.post('/workouts', verifyAuth, (req, res) => {
     workout = {
       id: uuid.v4(),
       userEmail: userEmail,
-      day: workoutName, 
-      name: workoutName,
+      day: workoutDayIdentifier, 
+      name: workoutDayIdentifier, 
       date: incomingWorkoutData.date,
-      type: incomingWorkoutData.type || workoutName,
+      type: incomingWorkoutData.type || workoutDayIdentifier,
       exercises: incomingWorkoutData.exercises || [],
       notes: incomingWorkoutData.notes || ''
     };
@@ -89,10 +118,10 @@ apiRouter.post('/workouts', verifyAuth, (req, res) => {
 
 
 apiRouter.post('/workouts/:day/exercises', verifyAuth, (req, res) => {
-  const workoutName = req.params.day;
+  const workoutDayIdentifier = req.params.day;
   const newExerciseName = req.body.name;
   
-  const workout = workouts.find(w => w.name === workoutName && w.userEmail === req.user.email);
+  const workout = findUserWorkout(req.user.email, workoutDayIdentifier);
   if (!workout) return res.status(404).send({ msg: 'Workout not found' });
   if (workout.exercises.some(e => e.name.toLowerCase() === newExerciseName.toLowerCase())) {
      return res.status(409).send({ msg: 'Exercise already exists in this workout' });
@@ -106,15 +135,14 @@ apiRouter.post('/workouts/:day/exercises', verifyAuth, (req, res) => {
   };
   workout.exercises.push(exercise);
   
-  
   res.send(workout); 
 });
 
 apiRouter.delete('/workouts/:day/exercises/:exerciseName', verifyAuth, (req, res) => {
-  const workoutName = req.params.day;
+  const workoutDayIdentifier = req.params.day;
   const exerciseName = req.params.exerciseName;
 
-  const workout = workouts.find(w => w.name === workoutName && w.userEmail === req.user.email);
+  const workout = findUserWorkout(req.user.email, workoutDayIdentifier);
   if (!workout) return res.status(404).send({ msg: 'Workout not found' });
 
   const initialLength = workout.exercises.length;
@@ -122,15 +150,14 @@ apiRouter.delete('/workouts/:day/exercises/:exerciseName', verifyAuth, (req, res
 
   if (workout.exercises.length === initialLength) return res.status(404).send({ msg: 'Exercise not found' });
 
-  // Return the updated workout object
   res.send(workout);
 });
 
 apiRouter.post('/workouts/:day/exercises/:exerciseName/results', verifyAuth, (req, res) => {
-  const workoutName = req.params.day;
+  const workoutDayIdentifier = req.params.day;
   const exerciseName = req.params.exerciseName;
 
-  const workout = workouts.find(w => w.name === workoutName && w.userEmail === req.user.email);
+  const workout = findUserWorkout(req.user.email, workoutDayIdentifier);
   if (!workout) return res.status(404).send({ msg: 'Workout not found' });
 
   const exercise = workout.exercises.find(e => e.name.toLowerCase() === exerciseName.toLowerCase());
@@ -146,18 +173,17 @@ apiRouter.post('/workouts/:day/exercises/:exerciseName/results', verifyAuth, (re
 });
 
 apiRouter.put('/workouts/:day/type', verifyAuth, (req, res) => {
-  const oldWorkoutName = req.params.day;
+  const workoutDayIdentifier = req.params.day;
   const newType = req.body.type;
 
-  const workout = workouts.find(w => w.name === oldWorkoutName && w.userEmail === req.user.email);
+  const workout = findUserWorkout(req.user.email, workoutDayIdentifier);
   if (!workout) return res.status(404).send({ msg: 'Workout not found' });
 
-  workout.name = newType; 
   workout.type = newType;
-
 
   res.send(workout);
 });
+
 
 apiRouter.get('/friends', verifyAuth, (req, res) => {
   const userEmail = req.user.email;
@@ -168,9 +194,6 @@ apiRouter.get('/friends', verifyAuth, (req, res) => {
   res.send(userFriends);
 });
 
-// index.js (Inside the apiRouter setup)
-
-// Add a friend
 apiRouter.post('/friends', verifyAuth, (req, res) => {
   const userEmail = req.user.email;
   const friendEmail = req.body.friendEmail;
@@ -179,7 +202,6 @@ apiRouter.post('/friends', verifyAuth, (req, res) => {
     return res.status(400).send({ msg: 'Missing friendEmail' });
   }
 
-  // Check if already added
   if (friendsList.some(f => f.userEmail === userEmail && f.friendEmail === friendEmail)) {
     return res.status(409).send({ msg: 'Friend already added' });
   }
@@ -192,7 +214,6 @@ apiRouter.post('/friends', verifyAuth, (req, res) => {
   friendsList.push(newFriend);
   res.send(newFriend);
 });
-
 
 apiRouter.post('/reactions', verifyAuth, (req, res) => {
   const senderEmail = req.user.email;
@@ -221,28 +242,6 @@ apiRouter.get('/reactions', verifyAuth, (req, res) => {
   res.send(receivedReactions);
 });
 
-async function createUser(email, password) {
-  const passwordHash = await bcrypt.hash(password, 10);
-  const user = { email, password: passwordHash, token: uuid.v4() };
-  users.push(user);
-  return user;
-}
-
-async function findUser(field, value) {
-  if (!value) return null;
-  return users.find(u => u[field] === value);
-}
-
-function setAuthCookie(res, token) {
-  res.cookie(authCookieName, token, {
-    maxAge: 1000 * 60 * 60 * 24 * 365,
-    secure: false,
-    httpOnly: true,
-    sameSite: 'strict'
-  });
-}
-
-
 app.use((err, req, res, next) => {
   res.status(500).send({ type: err.name, message: err.message });
 });
@@ -251,7 +250,6 @@ app.use((err, req, res, next) => {
 app.use((_req, res) => {
   res.sendFile('index.html', { root: 'public' });
 });
-
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
