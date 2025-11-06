@@ -8,6 +8,8 @@ const authCookieName = 'token';
 
 let users = [];
 let workouts = [];
+let friendsList = [];
+let reactions = [];
 
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
@@ -157,7 +159,67 @@ apiRouter.put('/workouts/:day/type', verifyAuth, (req, res) => {
   res.send(workout);
 });
 
+apiRouter.get('/friends', verifyAuth, (req, res) => {
+  const userEmail = req.user.email;
+  const userFriends = friendsList
+    .filter(f => f.userEmail === userEmail)
+    .map(f => f.friendEmail);
+    
+  res.send(userFriends);
+});
 
+// index.js (Inside the apiRouter setup)
+
+// Add a friend
+apiRouter.post('/friends', verifyAuth, (req, res) => {
+  const userEmail = req.user.email;
+  const friendEmail = req.body.friendEmail;
+
+  if (!friendEmail) {
+    return res.status(400).send({ msg: 'Missing friendEmail' });
+  }
+
+  // Check if already added
+  if (friendsList.some(f => f.userEmail === userEmail && f.friendEmail === friendEmail)) {
+    return res.status(409).send({ msg: 'Friend already added' });
+  }
+
+  const newFriend = {
+    userEmail: userEmail,
+    friendEmail: friendEmail
+  };
+
+  friendsList.push(newFriend);
+  res.send(newFriend);
+});
+
+
+apiRouter.post('/reactions', verifyAuth, (req, res) => {
+  const senderEmail = req.user.email;
+  const { friendEmail, exerciseName, emoji } = req.body;
+
+  if (!friendEmail || !exerciseName || !emoji) {
+    return res.status(400).send({ msg: 'Missing reaction data' });
+  }
+
+  const newReaction = {
+    id: uuid.v4(),
+    senderEmail: senderEmail,
+    receiverEmail: friendEmail,
+    exerciseName: exerciseName,
+    emoji: emoji,
+    timestamp: new Date().toISOString()
+  };
+
+  reactions.push(newReaction);
+  res.send(newReaction);
+});
+
+apiRouter.get('/reactions', verifyAuth, (req, res) => {
+  const userEmail = req.user.email;
+  const receivedReactions = reactions.filter(r => r.receiverEmail === userEmail);
+  res.send(receivedReactions);
+});
 
 async function createUser(email, password) {
   const passwordHash = await bcrypt.hash(password, 10);
