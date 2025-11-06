@@ -169,7 +169,7 @@ export function Progress() {
           </div>
 
           <div className="dropdown">
-            <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" width="flex">
               {selectedExercise || 'Exercise'}
             </button>
             <ul className="dropdown-menu">
@@ -221,7 +221,7 @@ export function Progress() {
 
       <h4>
         {selectedFriend && selectedExercise
-          ? `${selectedFriend}'s Progress on ${selectedExercise} (Only showing 'Me' data)`
+          ? `Progress on ${selectedExercise} (Can only show personal data for now)`
           : "Select a friend and an exercise"}
       </h4>
 
