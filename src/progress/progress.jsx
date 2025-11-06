@@ -48,18 +48,24 @@ export function Progress() {
 
 
   const chartData = React.useMemo(() => {
-    if (!selectedExercise || workouts.length === 0) return [];
+    if (!selectedExercise || !workouts || Object.keys(workouts).length === 0) return [];
 
-    return workouts.map(w => {
-      const exercise = w.exercises.find(e => e.startsWith(selectedExercise) && e.includes("Result:"));
-      if (!exercise) return null;
+    const dataPoints = [];
 
-      const resultMatch = exercise.match(/Result:\s*(\d+)/);
-      return resultMatch
-        ? { date: w.day, weight: parseInt(resultMatch[1]) }
-        : null;
-    }).filter(Boolean);
-  }, [selectedExercise, workouts]);
+    Object.entries(workouts).forEach(([type, details]) => {
+      details.exercises.forEach((e, idx) => {
+        if (e.startsWith(selectedExercise) && e.includes('Result:')) {
+          const match = e.match(/Result:\s*(\d+)/);
+          if (match) {
+            dataPoints.push({ date: type, weight: parseInt(match[1]) });
+          }
+        }
+      });
+    });
+
+  return dataPoints;
+}, [selectedExercise, workouts]);
+
 
 
   const sendReaction = (emoji) => {

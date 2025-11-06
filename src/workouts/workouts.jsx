@@ -5,8 +5,11 @@ export function Workouts() {
   const [selectedDay, setSelectedDay] = React.useState(null);
   const [newExercise, setNewExercise] = React.useState('');
 
+  // Load workouts from localStorage
   React.useEffect(() => {
     const stored = localStorage.getItem('workouts');
+    // NOTE: If you were using the old code and it saved data, 
+    // you must clear local storage for the new object structure to initialize correctly.
     if (stored) setWorkouts(JSON.parse(stored));
     else
       setWorkouts([
@@ -20,6 +23,7 @@ export function Workouts() {
       ]);
   }, []);
 
+  // Save workouts to localStorage whenever they change
   React.useEffect(() => {
     localStorage.setItem('workouts', JSON.stringify(workouts));
   }, [workouts]);
@@ -28,36 +32,57 @@ export function Workouts() {
 
   const addExercise = (exercise) => {
     if (!exercise || !selectedDay) return;
+    
+    // Check for duplicates before adding
+    const currentWorkout = workouts.find(w => w.day === selectedDay);
+    if (currentWorkout && currentWorkout.exercises.some(e => e.name.toLowerCase() === exercise.toLowerCase())) {
+        alert(`${exercise} is already in the list for ${selectedDay}.`);
+        return;
+    }
+
     setWorkouts(prev =>
       prev.map(w =>
-        w.day === selectedDay ? { ...w, exercises: [...w.exercises, exercise] } : w
+        w.day === selectedDay
+          ? { ...w, exercises: [...w.exercises, { name: exercise, results: [] }] }
+          : w
       )
     );
     setNewExercise('');
   };
 
-  const removeExercise = (exercise) => {
+  const removeExercise = (exerciseName) => {
     if (!selectedDay) return;
     setWorkouts(prev =>
       prev.map(w =>
         w.day === selectedDay
-          ? { ...w, exercises: w.exercises.filter(e => e !== exercise) }
+          ? { ...w, exercises: w.exercises.filter(e => e.name !== exerciseName) }
           : w
       )
     );
   };
 
-  const reportExercise = (exercise) => {
+  const reportExercise = (exerciseName) => {
     if (!selectedDay) return;
-    const result = prompt(`Enter result for ${exercise} on ${selectedDay}:`);
-    if (!result) return;
+    const resultValue = prompt(`Enter result (e.g., weight, reps) for ${exerciseName} on ${selectedDay}:`);
+    if (!resultValue) return;
+
+    // Optional improvement: Check if the result is a number before parsing
+    const parsedValue = parseFloat(resultValue);
+    if (isNaN(parsedValue)) {
+      alert("Invalid input. Please enter a numerical value.");
+      return;
+    }
+
+    const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
     setWorkouts(prev =>
       prev.map(w =>
         w.day === selectedDay
           ? {
               ...w,
               exercises: w.exercises.map(e =>
-                e === exercise ? `${e} - Result: ${result}` : e
+                e.name === exerciseName
+                  ? { ...e, results: [...e.results, { value: parsedValue, date: today }] }
+                  : e
               ),
             }
           : w
@@ -66,45 +91,46 @@ export function Workouts() {
   };
 
   const updateWorkoutType = (day, newType) => {
-  setWorkouts(prev =>
-    prev.map(w => w.day === day ? { ...w, type: newType } : w)
-  );
-};
-
+    setWorkouts(prev =>
+      prev.map(w => (w.day === day ? { ...w, type: newType } : w))
+    );
+  };
 
   const selectedWorkout = workouts.find(w => w.day === selectedDay);
 
-return (
-  <main className="container-fluid bg-dark text-light d-flex flex-column align-items-center mt-5 pt-3">
-    <div className="content-wrapper w-75">
-      <h2>My Workout Plan</h2>
+  return (
+    <main className="container-fluid bg-dark text-light d-flex flex-column align-items-center mt-5 pt-3">
+      <div className="content-wrapper w-75">
+        <h2>My Workout Plan</h2>
 
-      <table className="table table-dark table-hover mt-3">
-        <thead>
-          <tr>
-            <th>Day</th>
-            <th>Workout Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          {workouts.map((w) => (
-            <tr
-              key={w.day}
-              className={w.day === selectedDay ? 'table-active' : ''}
-              onClick={() => selectDay(w.day)}
-              style={{ cursor: 'pointer' }}
-            >
-              <td>{w.day}</td>
-              <td>{w.type}</td>
+        {/* Day selector table */}
+        <table className="table table-dark table-hover mt-3">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Workout Type</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {workouts.map((w) => (
+              <tr
+                key={w.day}
+                className={w.day === selectedDay ? 'table-active' : ''}
+                onClick={() => selectDay(w.day)}
+                style={{ cursor: 'pointer' }}
+              >
+                <td>{w.day}</td>
+                <td>{w.type}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-      {selectedWorkout ? (
-        <div className="mt-4">
-          <h3>{selectedDay} Exercises</h3>
+        {selectedWorkout ? (
+          <div className="mt-4">
+            <h3>{selectedDay} Exercises</h3>
 
+            {/* Workout type dropdown */}
             <div className="mb-3 text-center">
               <label className="d-block mb-2">Workout Type:</label>
               <div className="dropdown d-inline-block">
@@ -130,35 +156,40 @@ return (
               </div>
             </div>
 
+            {/* Exercises list */}
+            <ul className="list-unstyled">
+              {selectedWorkout.exercises.map((ex, idx) => (
+                <li key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 border-bottom">
+                  {ex.name} ({ex.results.length} results)
+                  <div>
+                    <button className="btn btn-sm btn-danger me-1" onClick={() => removeExercise(ex.name)}>−</button>
+                    <button className="btn btn-sm btn-info" onClick={() => reportExercise(ex.name)}>Report</button>
+                  </div>
+                </li>
+              ))}
+            </ul>
 
-          <ul>
-            {selectedWorkout.exercises.map((ex, idx) => (
-              <li key={idx} className="d-flex justify-content-between align-items-center">
-                {ex}
-                <div>
-                  <button className="btn btn-sm btn-danger me-1" onClick={() => removeExercise(ex)}>−</button>
-                  <button className="btn btn-sm btn-info" onClick={() => reportExercise(ex)}>Report</button>
-                </div>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-2 d-flex gap-2 align-items-cente justify-content-center">
-            <input
-              type="text"
-              value={newExercise}
-              onChange={e => setNewExercise(e.target.value)}
-              placeholder="New exercise"
-              className="form-control"
-            />
-            <button className="btn btn-primary" onClick={() => addExercise(newExercise)}>Add</button>
+            {/* Add new exercise */}
+            <div className="mt-4 d-flex gap-2 align-items-center justify-content-center">
+              <input
+                type="text"
+                value={newExercise}
+                onChange={e => setNewExercise(e.target.value)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        addExercise(newExercise);
+                    }
+                }}
+                placeholder="New exercise"
+                className="form-control"
+              />
+              <button className="btn btn-primary" onClick={() => addExercise(newExercise)}>Add</button>
+            </div>
           </div>
-        </div>
-      ) : (
-        <p>Click a day to view exercises for that day.</p>
-      )}
-    </div>
-  </main>
-);
-
+        ) : (
+          <p>Click a day to view exercises for that day.</p>
+        )}
+      </div>
+    </main>
+  );
 }
