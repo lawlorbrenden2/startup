@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Unauthenticated } from './unauthenticated';
 import { Authenticated } from './authenticated';
@@ -7,7 +8,14 @@ import { AuthState } from './authState';
 export function Login({ userName, authState, onAuthChange }) {
   const [quote, setQuote] = React.useState("");
   const [quoteAuthor, setQuoteAuthor] = React.useState("");
+  const navigate = useNavigate();
 
+
+    React.useEffect(() => {
+      if (authState === AuthState.UnauthenticatedAuthenticated) {
+        navigate('/login');
+      }
+    }, [authState, navigate]);
 
   React.useEffect(() => {
     if (authState === AuthState.Authenticated) {
