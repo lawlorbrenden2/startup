@@ -35,8 +35,12 @@ export function Login({ userName, authState, onAuthChange }) {
     <main className="container-fluid bg-dark text-light d-flex flex-column align-items-center justify-content-center auth-form">
       <div>
         {authState === AuthState.Unauthenticated && <h1>Welcome</h1>}
-        {authState === AuthState.Authenticated && <p>{quote}</p>}
-        {authState === AuthState.Authenticated && <p>- {quoteAuthor}</p>}
+        {authState === AuthState.Authenticated && (
+          <>
+            <p className="text small mb-1">{quote}</p>
+            <p className="text-secondary small">- {quoteAuthor}</p>
+          </>
+        )}
       </div>
       <div>
         {authState === AuthState.Authenticated && (
