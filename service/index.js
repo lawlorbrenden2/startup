@@ -186,7 +186,6 @@ apiRouter.put('/workouts/:day/type', verifyAuth, (req, res) => {
   res.send(workout);
 });
 
-
 apiRouter.get('/friends', verifyAuth, (req, res) => {
   const userEmail = req.user.email;
   const userFriends = friendsList

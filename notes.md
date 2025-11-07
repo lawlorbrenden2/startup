@@ -87,6 +87,10 @@ I decided to keep that placeholder paragraph as it basically summed up my experi
 
 This was certainly a lot of work, and I'm still not 100% certain I accounted for everything. I tried my best to use lots of hooks whenever I could, and I have learned a lot about them.
 
+## Service
+
+Working on this project was an absolute ton of work, but I learned a lot. Particularly, I learned to always ensure that your authenticatation logic is working right or you will cause yourself a ton of pain and confusion while debugging.
+
 ```jsx
 <div className="input-group sound-button-container">
   {calmSoundTypes.map((sound, index) => (
