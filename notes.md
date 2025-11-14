@@ -91,6 +91,10 @@ This was certainly a lot of work, and I'm still not 100% certain I accounted for
 
 Working on this project was an absolute ton of work, but I learned a lot. Particularly, I learned to always ensure that your authenticatation logic is working right or you will cause yourself a ton of pain and confusion while debugging.
 
+## Database
+
+This part wasn't too bad since most of the tough conceptual work came during the service portion. This part was basically just matching my service code to exactly how I envisioned the database would save it in the backend
+
 ```jsx
 <div className="input-group sound-button-container">
   {calmSoundTypes.map((sound, index) => (

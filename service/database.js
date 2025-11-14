@@ -69,7 +69,6 @@ async function addFriend(friend) {
   await friendCollection.insertOne(friend);
 }
 
-
 function getReactions(email) {
   return reactionCollection.find({ receiverEmail: email }).toArray();
 }
