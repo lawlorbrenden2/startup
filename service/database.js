@@ -17,3 +17,6 @@ async function main() {
     console.log(`Connection failed to ${url} because ${ex.message}`);
     process.exit(1);
   }
+}
+
+main();
