@@ -122,8 +122,8 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Stores data in MongoDB** - I did not complete this part of the deliverable.
-- [ ] **Stores credentials in MongoDB** - I did not complete this part of the deliverable.
+- [x] **Stores data in MongoDB** - Workout and exercise database logic is fully added functional. Adding friends and reactions also stores data to the database, however it doesn't actually link to any existing users yet. I figured that this extra functionality wasn't 100% necessary as it is extra complicated and perhaps above the scope of this class. For now, these buttons still exist on the front end as maybe if I have extra time I can get around to getting these to work exactly as I initially envisioned it at the start of the class.
+- [x] **Stores credentials in MongoDB** - Stores the users email and their password.
 
 ## 🚀 WebSocket deliverable
 
