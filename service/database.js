@@ -3,7 +3,6 @@ const config = require('./dbConfig.json');
 
 const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
 
-// Connect to the database cluster
 const client = new MongoClient(url);
 const db = client.db('flexbook');
 const userCollection = db.collection('users');
@@ -14,7 +13,7 @@ const reactionCollection = db.collection('reactions');
 (async function testConnection() {
   try {
     await db.command({ ping: 1 });
-    console.log(`Connect to database`);
+    console.log(`Connected to database`);
   } catch (ex) {
     console.log(`Unable to connect to database with ${url} because ${ex.message}`);
     process.exit(1);
@@ -22,11 +21,11 @@ const reactionCollection = db.collection('reactions');
 })();
 
 function getUser(email) {
-  return userCollection.findOne({ email: email });
+  return userCollection.findOne({ email });
 }
 
 function getUserByToken(token) {
-  return userCollection.findOne({ token: token });
+  return userCollection.findOne({ token });
 }
 
 async function addUser(user) {
@@ -38,7 +37,11 @@ async function updateUser(user) {
 }
 
 function getWorkouts(email) {
-    return workoutCollection.find({ userEmail: email }).toArray();
+  return workoutCollection.find({ userEmail: email }).toArray();
+}
+
+function getWorkout(userEmail, day) {
+  return workoutCollection.findOne({ userEmail, day });
 }
 
 async function saveWorkout(workout) {
@@ -49,16 +52,30 @@ async function saveWorkout(workout) {
   );
 }
 
+async function updateWorkout(workout) {
+  await saveWorkout(workout);
+}
+
 function getFriends(email) {
-    return friendCollection.find({ userEmail: email }).toArray();
+  return friendCollection.find({ userEmail: email }).toArray();
+}
+
+async function friendExists(userEmail, friendEmail) {
+  const existing = await friendCollection.findOne({ userEmail, friendEmail });
+  return !!existing;
 }
 
 async function addFriend(friend) {
-    await friendCollection.insertOne(friend);
+  await friendCollection.insertOne(friend);
 }
 
+
 function getReactions(email) {
-    return reactionCollection.find({ userEmail: email }).toArray();
+  return reactionCollection.find({ receiverEmail: email }).toArray();
+}
+
+async function addReaction(reaction) {
+  await reactionCollection.insertOne(reaction);
 }
 
 module.exports = {
@@ -67,8 +84,11 @@ module.exports = {
   addUser,
   updateUser,
   getWorkouts,
+  getWorkout,
   saveWorkout,
+  updateWorkout,
   getFriends,
+  friendExists,
   addFriend,
   getReactions,
   addReaction,
