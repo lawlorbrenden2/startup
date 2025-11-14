@@ -7,11 +7,6 @@ const DB = require('./database.js');
 
 const authCookieName = 'token';
 
-let users = [];
-let workouts = [];
-let friendsList = [];
-let reactions = [];
-
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
 app.use(express.json());
@@ -25,13 +20,16 @@ app.use('/api', apiRouter);
 async function createUser(email, password) {
   const passwordHash = await bcrypt.hash(password, 10);
   const user = { email, password: passwordHash, token: uuid.v4() };
-  users.push(user);
+  await DB.addUser(user);
   return user;
 }
 
 async function findUser(field, value) {
   if (!value) return null;
-  return users.find(u => u[field] === value);
+  if (field === 'token') { 
+    return DB.getUserByToken(value);
+  }
+  return DB.getUser(value);
 }
 
 // setAuthCookie in the HTTP response
@@ -86,9 +84,14 @@ apiRouter.delete('/auth/logout', async (req, res) => {
   res.status(204).end();
 });
 
-apiRouter.get('/workouts', verifyAuth, (req, res) => {
-  const userWorkouts = workouts.filter(w => w.userEmail === req.user.email);
-  res.send(userWorkouts);
+apiRouter.get('/workouts', verifyAuth, async (req, res) => {
+  try {
+    const userWorkouts = await DB.getWorkouts(req.user.email);
+    res.send(userWorkouts);
+  } catch (err) {
+    console.error('Error fetching workouts:', err);
+    res.status(500).send({ error: 'Failed to fetch workouts' });
+  }
 });
 
 apiRouter.post('/workouts', verifyAuth, (req, res) => {
